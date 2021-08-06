@@ -49,22 +49,9 @@ public let LRUCacheMemoryWarningNotification: NSNotification.Name =
 #endif
 
 public final class LRUCache<Key: Hashable, Value> {
-    private final class Container {
-        var value: Value
-        var sequenceNumber: Int
-        var cost: Int
-        var key: Key
-
-        init(value: Value, sequenceNumber: Int, cost: Int, key: Key) {
-            self.value = value
-            self.sequenceNumber = sequenceNumber
-            self.cost = cost
-            self.key = key
-        }
-    }
-
-    private var sequenceNumber: Int = 0
     private var values: [Key: Container] = [:]
+    private unowned(unsafe) var head: Container?
+    private unowned(unsafe) var tail: Container?
     private let lock: NSLock = .init()
     private var token: AnyObject?
     private let notificationCenter: NotificationCenter
@@ -126,18 +113,19 @@ public extension LRUCache {
         lock.lock()
         if let container = values[key] {
             container.value = value
-            container.sequenceNumber = sequenceNumber
             totalCost -= container.cost
             container.cost = cost
+            remove(container)
+            append(container)
         } else {
-            values[key] = Container(
+            let container = Container(
                 value: value,
-                sequenceNumber: sequenceNumber,
                 cost: cost,
                 key: key
             )
+            values[key] = container
+            append(container)
         }
-        sequenceNumber += 1
         totalCost += cost
         lock.unlock()
         clean()
@@ -150,6 +138,7 @@ public extension LRUCache {
         guard let container = values.removeValue(forKey: key) else {
             return nil
         }
+        remove(container)
         totalCost -= container.cost
         return container.value
     }
@@ -159,8 +148,8 @@ public extension LRUCache {
         lock.lock()
         defer { lock.unlock() }
         if let container = values[key] {
-            container.sequenceNumber = sequenceNumber
-            sequenceNumber += 1
+            remove(container)
+            append(container)
             return container.value
         }
         return nil
@@ -170,23 +159,58 @@ public extension LRUCache {
     func removeAllValues() {
         lock.lock()
         values.removeAll()
+        head = nil
+        tail = nil
         lock.unlock()
     }
 }
 
 private extension LRUCache {
+    final class Container {
+        var value: Value
+        var cost: Int
+        let key: Key
+        unowned(unsafe) var prev: Container?
+        unowned(unsafe) var next: Container?
+
+        init(value: Value, cost: Int, key: Key) {
+            self.value = value
+            self.cost = cost
+            self.key = key
+        }
+    }
+
+    // Remove container from list
+    func remove(_ container: Container) {
+        if head === container {
+            head = container.next
+        }
+        if tail === container {
+            tail = container.prev
+        }
+        container.next?.prev = container.prev
+        container.prev?.next = container.next
+        container.next = nil
+    }
+
+    // Append container to list
+    func append(_ container: Container) {
+        assert(container.next == nil)
+        if head == nil {
+            head = container
+        }
+        container.prev = tail
+        tail?.next = container
+        tail = container
+    }
+
     func clean() {
         lock.lock()
         defer { lock.unlock() }
-        guard totalCost > totalCostLimit || count > countLimit else {
-            return
-        }
-        var lru = ArraySlice(values.values.sorted(by: {
-            $0.sequenceNumber < $1.sequenceNumber
-        }))
-        while totalCost > totalCostLimit / 2 || count > countLimit / 2,
-              let container = lru.popFirst()
+        while totalCost > totalCostLimit || count > countLimit,
+              let container = head
         {
+            remove(container)
             values.removeValue(forKey: container.key)
             totalCost -= container.cost
         }
