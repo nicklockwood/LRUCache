@@ -85,6 +85,12 @@ public final class LRUCache<Key: Hashable, Value> {
         }
         #endif
     }
+    
+    deinit {
+        if let token = token {
+            notificationCenter.removeObserver(token)
+        }
+    }
 }
 
 public extension LRUCache {
