@@ -103,5 +103,36 @@ class LRUCacheTests: XCTestCase {
         )
         XCTAssert(cache.isEmpty)
     }
+    
+    func testNotificationObserverIsRemoved() {
+        final class TestNotificationCenter: NotificationCenter {
+            private(set) var observersCount = 0
+            
+            override func addObserver(
+                forName name: NSNotification.Name?,
+                object obj: Any?,
+                queue: OperationQueue?,
+                using block: @escaping (Notification) -> Void) -> NSObjectProtocol {
+                defer { observersCount += 1 }
+                return super.addObserver(forName: name, object: obj, queue: queue, using: block)
+            }
+            
+            override func removeObserver(_ observer: Any) {
+                super.removeObserver(observer)
+                observersCount -= 1
+            }
+        }
+        
+        let notificationCenter = TestNotificationCenter()
+        var cache: LRUCache? = LRUCache<Int, Int>(notificationCenter: notificationCenter)
+        weak var weakCache = cache
+        
+        XCTAssertEqual(1, notificationCenter.observersCount)
+
+        cache = nil
+        XCTAssertNil(weakCache)
+        
+        XCTAssertEqual(0, notificationCenter.observersCount)
+    }
     #endif
 }

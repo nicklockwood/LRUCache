@@ -54,6 +54,7 @@ public final class LRUCache<Key: Hashable, Value> {
     private var values: [Key: Container] = [:]
     private let lock: NSLock = .init()
     private var token: AnyObject?
+    private let notificationCenter: NotificationCenter
 
     /// The current total cost of values in the cache
     public private(set) var totalCost: Int = 0
@@ -69,12 +70,13 @@ public final class LRUCache<Key: Hashable, Value> {
     }
 
     /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
-    public init(totalCostLimit: Int = .max, countLimit: Int = .max) {
+    public init(totalCostLimit: Int = .max, countLimit: Int = .max, notificationCenter: NotificationCenter = .default) {
         self.totalCostLimit = totalCostLimit
         self.countLimit = countLimit
+        self.notificationCenter = notificationCenter
 
         #if canImport(UIKit)
-        self.token = NotificationCenter.default.addObserver(
+        self.token = notificationCenter.addObserver(
             forName: UIApplication.didReceiveMemoryWarningNotification,
             object: nil,
             queue: nil
