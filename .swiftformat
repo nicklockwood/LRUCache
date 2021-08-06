@@ -5,4 +5,6 @@
 --self init-only
 --wraparguments before-first
 --wrapcollections before-first
---maxwidth 120
+--maxwidth 80
+
+--exclude Package.swift

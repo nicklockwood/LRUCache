@@ -10,7 +10,7 @@ import LRUCache
 import XCTest
 
 class LRUPerformanceTests: XCTestCase {
-    let iterations = 100000
+    let iterations = 10000
 
     func testInsertionPerformance() {
         measure {
@@ -47,7 +47,7 @@ class LRUPerformanceTests: XCTestCase {
 
     func testOverflowInsertionPerformance() {
         measure {
-            let cache = LRUCache<Int, Int>(countLimit: 10000)
+            let cache = LRUCache<Int, Int>(countLimit: 1000)
             for i in 0 ..< iterations {
                 cache.setValue(i, forKey: i)
             }
