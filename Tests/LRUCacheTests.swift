@@ -9,10 +9,6 @@
 import LRUCache
 import XCTest
 
-#if canImport(UIKit)
-import UIKit
-#endif
-
 class LRUCacheTests: XCTestCase {
     func testCountLimit() {
         let cache = LRUCache<Int, Int>(countLimit: 3)
@@ -90,7 +86,6 @@ class LRUCacheTests: XCTestCase {
         XCTAssertEqual(cache.totalCost, 7)
     }
 
-    #if canImport(UIKit)
     func testMemoryWarning() {
         let cache = LRUCache<Int, Int>()
         for i in 0 ..< 100 {
@@ -98,41 +93,44 @@ class LRUCacheTests: XCTestCase {
         }
         XCTAssertEqual(cache.count, 100)
         NotificationCenter.default.post(
-            name: UIApplication.didReceiveMemoryWarningNotification,
+            name: LRUCacheMemoryWarningNotification,
             object: nil
         )
         XCTAssert(cache.isEmpty)
     }
-    
+
     func testNotificationObserverIsRemoved() {
         final class TestNotificationCenter: NotificationCenter {
             private(set) var observersCount = 0
-            
+
             override func addObserver(
                 forName name: NSNotification.Name?,
                 object obj: Any?,
                 queue: OperationQueue?,
-                using block: @escaping (Notification) -> Void) -> NSObjectProtocol {
+                using block: @escaping (Notification) -> Void
+            ) -> NSObjectProtocol {
                 defer { observersCount += 1 }
-                return super.addObserver(forName: name, object: obj, queue: queue, using: block)
+                return super.addObserver(
+                    forName: name,
+                    object: obj,
+                    queue: queue,
+                    using: block
+                )
             }
-            
+
             override func removeObserver(_ observer: Any) {
                 super.removeObserver(observer)
                 observersCount -= 1
             }
         }
-        
-        let notificationCenter = TestNotificationCenter()
-        var cache: LRUCache? = LRUCache<Int, Int>(notificationCenter: notificationCenter)
-        weak var weakCache = cache
-        
-        XCTAssertEqual(1, notificationCenter.observersCount)
 
+        let notificationCenter = TestNotificationCenter()
+        var cache: LRUCache<Int, Int>? =
+            .init(notificationCenter: notificationCenter)
+        weak var weakCache = cache
+        XCTAssertEqual(1, notificationCenter.observersCount)
         cache = nil
         XCTAssertNil(weakCache)
-        
         XCTAssertEqual(0, notificationCenter.observersCount)
     }
-    #endif
 }

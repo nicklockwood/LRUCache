@@ -33,6 +33,17 @@ import Foundation
 
 #if canImport(UIKit)
 import UIKit
+
+/// Notification that cache should be cleared
+public let LRUCacheMemoryWarningNotification: NSNotification.Name =
+    UIApplication.didReceiveMemoryWarningNotification
+
+#else
+
+/// Notification that cache should be cleared
+public let LRUCacheMemoryWarningNotification: NSNotification.Name =
+    .init("LRUCacheMemoryWarningNotification")
+
 #endif
 
 public final class LRUCache<Key: Hashable, Value> {
@@ -70,22 +81,22 @@ public final class LRUCache<Key: Hashable, Value> {
     }
 
     /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
-    public init(totalCostLimit: Int = .max, countLimit: Int = .max, notificationCenter: NotificationCenter = .default) {
+    public init(totalCostLimit: Int = .max, countLimit: Int = .max,
+                notificationCenter: NotificationCenter = .default)
+    {
         self.totalCostLimit = totalCostLimit
         self.countLimit = countLimit
         self.notificationCenter = notificationCenter
 
-        #if canImport(UIKit)
         self.token = notificationCenter.addObserver(
-            forName: UIApplication.didReceiveMemoryWarningNotification,
+            forName: LRUCacheMemoryWarningNotification,
             object: nil,
             queue: nil
         ) { [weak self] _ in
             self?.removeAllValues()
         }
-        #endif
     }
-    
+
     deinit {
         if let token = token {
             notificationCenter.removeObserver(token)
