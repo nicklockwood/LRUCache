@@ -11,34 +11,29 @@ import XCTest
 
 class LRUCacheTests: XCTestCase {
     func testCountLimit() {
-        let cache = LRUCache<Int, Int>(countLimit: 3)
+        let cache = LRUCache<Int, Int>(countLimit: 2)
         cache.setValue(0, forKey: 0)
         XCTAssertNotNil(cache.value(forKey: 0))
         cache.setValue(1, forKey: 1)
         cache.setValue(2, forKey: 2)
-        cache.setValue(3, forKey: 3)
         XCTAssertNil(cache.value(forKey: 0))
-        XCTAssertNil(cache.value(forKey: 1))
-        XCTAssertNil(cache.value(forKey: 2))
-        XCTAssertNotNil(cache.value(forKey: 3))
-        XCTAssertEqual(cache.count, 1)
+        XCTAssertNotNil(cache.value(forKey: 1))
+        XCTAssertNotNil(cache.value(forKey: 2))
+        XCTAssertEqual(cache.count, 2)
     }
 
     func testCostLimit() {
-        let cache = LRUCache<Int, Int>(totalCostLimit: 4)
+        let cache = LRUCache<Int, Int>(totalCostLimit: 3)
         cache.setValue(0, forKey: 0, cost: 1)
         cache.setValue(1, forKey: 1, cost: 1)
-        cache.setValue(2, forKey: 2, cost: 1)
-        XCTAssertNotNil(cache.value(forKey: 0))
-        XCTAssertEqual(cache.count, 3)
-        XCTAssertEqual(cache.totalCost, 3)
-        cache.setValue(3, forKey: 3, cost: 2)
-        XCTAssertNil(cache.value(forKey: 0))
-        XCTAssertNil(cache.value(forKey: 1))
-        XCTAssertNil(cache.value(forKey: 2))
-        XCTAssertNotNil(cache.value(forKey: 3))
-        XCTAssertEqual(cache.count, 1)
+        XCTAssertEqual(cache.count, 2)
         XCTAssertEqual(cache.totalCost, 2)
+        cache.setValue(2, forKey: 2, cost: 2)
+        XCTAssertNil(cache.value(forKey: 0))
+        XCTAssertNotNil(cache.value(forKey: 1))
+        XCTAssertNotNil(cache.value(forKey: 2))
+        XCTAssertEqual(cache.count, 2)
+        XCTAssertEqual(cache.totalCost, 3)
     }
 
     func testAdjustCountLimit() {
@@ -47,7 +42,7 @@ class LRUCacheTests: XCTestCase {
         cache.setValue(1, forKey: 1, cost: 1)
         cache.countLimit = 1
         XCTAssertNil(cache.value(forKey: 0))
-        XCTAssert(cache.isEmpty)
+        XCTAssertEqual(cache.count, 1)
     }
 
     func testAdjustCostLimit() {
@@ -57,7 +52,7 @@ class LRUCacheTests: XCTestCase {
         cache.setValue(2, forKey: 2, cost: 1)
         cache.totalCostLimit = 2
         XCTAssertNil(cache.value(forKey: 0))
-        XCTAssertEqual(cache.count, 1)
+        XCTAssertEqual(cache.count, 2)
         cache.totalCostLimit = 0
         XCTAssert(cache.isEmpty)
     }
@@ -132,5 +127,12 @@ class LRUCacheTests: XCTestCase {
         cache = nil
         XCTAssertNil(weakCache)
         XCTAssertEqual(0, notificationCenter.observersCount)
+    }
+
+    func testNoStackOverflowForlargeCache() {
+        let cache = LRUCache<Int, Int>()
+        for i in 0 ..< 100000 {
+            cache.setValue(i, forKey: i)
+        }
     }
 }
