@@ -98,9 +98,7 @@ On iOS and tvOS, the cache will be emptied automatically in the event of a memor
 
 # Performance
 
-Reading, writing and removing entries from the cache are performed in constant time. When the cache is full, insertion time degrades significantly in proportion to the size of the cache as the cleanup cycle is run.
-
-For this reason, you should ideally set your cache capacity large enough that it will rarely get full, but if that isn't possible it may be better to choose a smaller size, as very large sizes will cause longer cleanup pauses when the cache is full.
+Reading, writing and removing entries from the cache are performed in constant time. When the cache is full, insertion time degrades slightly due to the need to remove elements each time a new value is inserted. This should still be constant-time, however adding a value with a large cost may cause multiple low-cost values to be evicted, which will take a time proportional to the number of values affected.
 
 
 # Credits
