@@ -1,3 +1,7 @@
+## [1.0.3](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.2) (2021-08-08)
+
+- Fixed warnings on Xcode 13.3
+
 ## [1.0.2](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.2) (2021-08-08)
 
 - Significantly improved performance when cache is full by using a double-linked list

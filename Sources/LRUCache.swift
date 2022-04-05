@@ -70,9 +70,11 @@ public final class LRUCache<Key: Hashable, Value> {
     }
 
     /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
-    public init(totalCostLimit: Int = .max, countLimit: Int = .max,
-                notificationCenter: NotificationCenter = .default)
-    {
+    public init(
+        totalCostLimit: Int = .max,
+        countLimit: Int = .max,
+        notificationCenter: NotificationCenter = .default
+    ) {
         self.totalCostLimit = totalCostLimit
         self.countLimit = countLimit
         self.notificationCenter = notificationCenter
