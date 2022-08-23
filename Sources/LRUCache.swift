@@ -77,6 +77,9 @@ public final class LRUCache<Key: Hashable, Value> {
     ) {
         self.totalCostLimit = totalCostLimit
         self.countLimit = countLimit
+        if countLimit != .max {
+            values.reserveCapacity(countLimit)
+        }
         self.notificationCenter = notificationCenter
 
         self.token = notificationCenter.addObserver(
@@ -105,13 +108,21 @@ public extension LRUCache {
     var isEmpty: Bool {
         values.isEmpty
     }
-
-    /// Insert a value into the cache with optional `cost`
-    func setValue(_ value: Value?, forKey key: Key, cost: Int = 0) {
-        guard let value = value else {
-            removeValue(forKey: key)
-            return
+    
+    @inlinable
+    subscript(_ key: Key) -> Value? {
+        get { value(forKey: key) }
+        set {
+            if let newValue = newValue {
+                setValue(newValue, forKey: key)
+            } else {
+                removeValue(forKey: key)
+            }
         }
+    }
+    
+    /// Insert a value into the cache with optional `cost`
+    func setValue(_ value: Value, forKey key: Key, cost: Int = 0) {
         lock.lock()
         if let container = values[key] {
             container.value = value
@@ -131,6 +142,15 @@ public extension LRUCache {
         totalCost += cost
         lock.unlock()
         clean()
+    }
+    
+    /// Insert a value into the cache with optional `cost`
+    func setValue(_ value: Value?, forKey key: Key, cost: Int = 0) {
+        guard let value = value else {
+            removeValue(forKey: key)
+            return
+        }
+        setValue(value, forKey: key)
     }
 
     /// Remove a value  from the cache and return it

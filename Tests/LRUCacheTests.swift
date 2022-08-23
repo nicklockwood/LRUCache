@@ -9,7 +9,7 @@
 import LRUCache
 import XCTest
 
-class LRUCacheTests: XCTestCase {
+final class LRUCacheTests: XCTestCase {
     func testCountLimit() {
         let cache = LRUCache<Int, Int>(countLimit: 2)
         cache.setValue(0, forKey: 0)
@@ -64,7 +64,7 @@ class LRUCacheTests: XCTestCase {
         XCTAssertEqual(cache.removeValue(forKey: 0), 0)
         XCTAssertEqual(cache.count, 1)
         XCTAssertNil(cache.removeValue(forKey: 0))
-        cache.setValue(nil, forKey: 1)
+        cache.removeValue(forKey: 1)
         XCTAssert(cache.isEmpty)
     }
 

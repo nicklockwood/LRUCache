@@ -9,14 +9,14 @@
 import LRUCache
 import XCTest
 
-class LRUPerformanceTests: XCTestCase {
+final class LRUPerformanceTests: XCTestCase {
     let iterations = 10000
 
     func testInsertionPerformance() {
         measure {
             let cache = LRUCache<Int, Int>()
             for i in 0 ..< iterations {
-                cache.setValue(i, forKey: i)
+                cache[i] = i
             }
         }
     }
@@ -24,11 +24,11 @@ class LRUPerformanceTests: XCTestCase {
     func testLookupPerformance() {
         let cache = LRUCache<Int, Int>()
         for i in 0 ..< iterations {
-            cache.setValue(i, forKey: i)
+            cache[i] = i
         }
         measure {
             for i in 0 ..< iterations {
-                _ = cache.value(forKey: i)
+                _ = cache[i]
             }
         }
     }
@@ -49,7 +49,7 @@ class LRUPerformanceTests: XCTestCase {
         measure {
             let cache = LRUCache<Int, Int>(countLimit: 1000)
             for i in 0 ..< iterations {
-                cache.setValue(i, forKey: i)
+                cache[i] = i
             }
         }
     }
