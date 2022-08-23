@@ -43,12 +43,15 @@ This would create a cache of unlimited size, containing `Int` values keyed by `S
 
 ```swift
 cache.setValue(99, forKey: "foo")
+cache["foo"] = 99
 ```
 
 To fetch a cached value, use:
 
 ```swift
-let value = cache.value(forKey: "foo") // Returns nil if value not found
+// Returns nil if value not found
+let value = cache.value(forKey: "foo")
+let value = cache["foo"]
 ```
 
 You can limit the cache size either by count or by *cost*. This can be done at initialization time:
@@ -68,18 +71,14 @@ The cost is an arbitrary measure of size, defined by your application. For a fil
 
 ```swift
 cache.setValue(data, forKey: "foo", cost: data.count)
+cache["foo"] = data
 ```
 
 Values will be removed from the cache automatically when either the count or cost limits are exceeded. You can also remove values explicitly by using:
 
 ```swift
 let value = cache.removeValue(forKey: "foo")
-```
-
-Or, if you don't need the value, by setting it to `nil`:
-
-```swift
-cache.setValue(nil, forKey: "foo")
+cache["foo"] = nil
 ```
 
 And you can remove all values at once with:
