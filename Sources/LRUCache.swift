@@ -145,12 +145,13 @@ public extension LRUCache {
     }
     
     /// Insert a value into the cache with optional `cost`
+    @available(*, deprecated, message: "For API clarity, use removeValue(forKey:) instead.")
     func setValue(_ value: Value?, forKey key: Key, cost: Int = 0) {
         guard let value = value else {
             removeValue(forKey: key)
             return
         }
-        setValue(value, forKey: key)
+        setValue(value, forKey: key, cost: cost)
     }
 
     /// Remove a value  from the cache and return it
