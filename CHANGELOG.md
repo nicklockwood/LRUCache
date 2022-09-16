@@ -1,4 +1,10 @@
-## [1.0.3](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.2) (2021-08-08)
+## [1.0.4](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.4) (2022-09-16)
+
+- Added `allValues` computed property
+- Added watchOS compatibility
+- Fixed warnings on Xcode 14
+
+## [1.0.3](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.3) (2021-08-08)
 
 - Fixed warnings on Xcode 13.3
 

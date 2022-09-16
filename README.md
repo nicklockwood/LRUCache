@@ -1,6 +1,6 @@
 [![Build](https://github.com/nicklockwood/LRUCache/actions/workflows/build.yml/badge.svg)](https://github.com/nicklockwood/LRUCache/actions/workflows/build.yml)
 [![Codecov](https://codecov.io/gh/nicklockwood/LRUCache/graphs/badge.svg)](https://codecov.io/gh/nicklockwood/LRUCache)
-[![Platforms](https://img.shields.io/badge/platforms-iOS%20|%20Mac%20|%20tvOS%20|%20Linux-lightgray.svg)]()
+[![Platforms](https://img.shields.io/badge/platforms-iOS%20|%20Mac%20|%20tvOS%20|%20watchOS%20|%20Linux-lightgray.svg)]()
 [![Swift 5.1](https://img.shields.io/badge/swift-5.1-red.svg?style=flat)](https://developer.apple.com/swift)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
 [![Twitter](https://img.shields.io/badge/twitter-@nicklockwood-blue.svg)](http://twitter.com/nicklockwood)
@@ -49,6 +49,12 @@ To fetch a cached value, use:
 
 ```swift
 let value = cache.value(forKey: "foo") // Returns nil if value not found
+```
+
+To fetch *all* the values stored in the cache, use:
+
+```swift
+let values = cache.allValues // Ordered from oldest to newest
 ```
 
 You can limit the cache size either by count or by *cost*. This can be done at initialization time:
