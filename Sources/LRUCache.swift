@@ -33,7 +33,7 @@
 
 import Foundation
 
-#if canImport(UIKit)
+#if os(iOS) || os(tvOS)
 import UIKit
 
 /// Notification that cache should be cleared
