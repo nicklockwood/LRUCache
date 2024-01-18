@@ -106,6 +106,19 @@ public extension LRUCache {
         values.isEmpty
     }
 
+    /// Returns all keys in the cache from oldest to newest
+    var allKeys: [Key] {
+        lock.lock()
+        defer { lock.unlock() }
+        var keys = [Key]()
+        var next = head
+        while let container = next {
+            keys.append(container.key)
+            next = container.next
+        }
+        return keys
+    }
+
     /// Returns all values in the cache from oldest to newest
     var allValues: [Value] {
         lock.lock()
