@@ -1,3 +1,7 @@
+## [1.0.5](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.5) (2024-01-20)
+
+- Added `allKeys` computed property
+
 ## [1.0.4](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.4) (2022-09-16)
 
 - Added `allValues` computed property

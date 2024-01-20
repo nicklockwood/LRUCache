@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0162A09923795EB30078AE84 /* LRUCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 016FAB2921BFE78100AF60DC /* LRUCache.framework */; };
+		01E6777E2B5BDBE1005594D6 /* MetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */; };
 		01FFF38226BCDCCC004D99ED /* LRUPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */; };
 		0A240137256A64FB00C1535C /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A240136256A64FB00C1535C /* LRUCacheTests.swift */; };
 		0A24013F256A671600C1535C /* LRUCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A24013E256A671600C1535C /* LRUCache.swift */; };
@@ -28,6 +29,7 @@
 		016FAB2D21BFE78100AF60DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		016FAB3221BFE78100AF60DC /* LRUCacheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LRUCacheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		016FAB3921BFE78100AF60DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataTests.swift; sourceTree = "<group>"; };
 		01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUPerformanceTests.swift; sourceTree = "<group>"; };
 		0A240136256A64FB00C1535C /* LRUCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheTests.swift; sourceTree = "<group>"; };
 		0A24013E256A671600C1535C /* LRUCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCache.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 			children = (
 				0A240136256A64FB00C1535C /* LRUCacheTests.swift */,
 				01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */,
+				01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */,
 				016FAB3921BFE78100AF60DC /* Info.plist */,
 			);
 			path = Tests;
@@ -262,6 +265,7 @@
 			files = (
 				01FFF38226BCDCCC004D99ED /* LRUPerformanceTests.swift in Sources */,
 				0A240137256A64FB00C1535C /* LRUCacheTests.swift in Sources */,
+				01E6777E2B5BDBE1005594D6 /* MetadataTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,7 +335,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -339,6 +343,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -393,13 +398,14 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.2;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -426,16 +432,18 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.5;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=75";
 				PRODUCT_BUNDLE_IDENTIFIER = com.charcoaldesign.LRUCache;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = LRUCache;
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx appletvos appletvsimulator watchsimulator watchos";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,6,7";
 			};
 			name = Debug;
 		};
@@ -460,15 +468,17 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.5;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=75";
 				PRODUCT_BUNDLE_IDENTIFIER = com.charcoaldesign.LRUCache;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = LRUCache;
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx appletvos appletvsimulator watchsimulator watchos";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,6,7";
 			};
 			name = Release;
 		};
