@@ -1,3 +1,8 @@
+## [1.0.6](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.6) (2024-01-22)
+
+- Fixed bug where `totalCost` wasn't reset when calling `removeAllValues()`
+- Automatic cache clearing in the event of a memory warning now works on visionOS
+
 ## [1.0.5](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.5) (2024-01-20)
 
 - Added `allKeys` computed property

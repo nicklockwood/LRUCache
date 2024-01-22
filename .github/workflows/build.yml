@@ -10,7 +10,7 @@ jobs:
       matrix:
         macos:
           - 11
-          - 14
+          - 13
         xcode:
           - latest-stable
     runs-on: macos-${{ matrix.macos }}
