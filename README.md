@@ -95,7 +95,7 @@ And you can remove all values at once with:
 cache.removeAllValues()
 ```
 
-On iOS and tvOS, the cache will be emptied automatically in the event of a memory warning.
+On platforms where UIKit is available (iOS, tvOS, and visionOS), the cache will be emptied automatically in the event of a memory warning.
 
 
 # Concurrency
