@@ -70,12 +70,14 @@ class LRUCacheTests: XCTestCase {
 
     func testRemoveAllValues() {
         let cache = LRUCache<Int, Int>(totalCostLimit: 2)
-        cache.setValue(0, forKey: 0)
-        cache.setValue(1, forKey: 1)
+        cache.setValue(0, forKey: 0, cost: 1)
+        cache.setValue(1, forKey: 1, cost: 1)
         cache.removeAllValues()
         XCTAssert(cache.isEmpty)
-        cache.setValue(0, forKey: 0)
+        XCTAssertEqual(cache.totalCost, 0)
+        cache.setValue(0, forKey: 0, cost: 1)
         XCTAssertEqual(cache.count, 1)
+        XCTAssertEqual(cache.totalCost, 1)
     }
 
     func testAllValues() {
