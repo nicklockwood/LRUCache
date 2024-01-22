@@ -190,6 +190,7 @@ public extension LRUCache {
         values.removeAll()
         head = nil
         tail = nil
+        totalCost = 0
         lock.unlock()
     }
 }
