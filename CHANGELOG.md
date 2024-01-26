@@ -1,3 +1,7 @@
+## [1.0.7](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.7) (2024-01-26)
+
+- Fixed watchOS compatibility issue
+
 ## [1.0.6](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.6) (2024-01-22)
 
 - Fixed bug where `totalCost` wasn't reset when calling `removeAllValues()`
