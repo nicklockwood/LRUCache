@@ -133,6 +133,19 @@ public extension LRUCache {
         return values
     }
 
+    func hasKey(_ key: Key) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        var next = head
+        while let container = next {
+            if container.key == key {
+                return true
+            }
+            next = container.next
+        }
+        return false
+    }
+    
     /// Insert a value into the cache with optional `cost`
     func setValue(_ value: Value?, forKey key: Key, cost: Int = 0) {
         guard let value = value else {
