@@ -11,12 +11,6 @@ import XCTest
 
 class LRUPerformanceTests: XCTestCase {
     let iterations = 10000
-    let cache = LRUCache<Int, Int>()
-
-    override func setUp() {
-        cache.removeAll()
-        populateCache(cache)
-    }
 
     private func populateCache(_ cache: LRUCache<Int, Int>) {
         for i in 0 ..< iterations {
@@ -24,14 +18,43 @@ class LRUPerformanceTests: XCTestCase {
         }
     }
 
+    private func createCache(populated: Bool) -> LRUCache<Int, Int> {
+        let cache = LRUCache<Int, Int>()
+        if populated {
+            populateCache(cache)
+        }
+        return cache
+    }
+
+    private func createCaches(_ count: Int = 10, populated: Bool) -> [LRUCache<Int, Int>] {
+        var caches = [LRUCache<Int, Int>]()
+        for _ in 0 ... count {
+            caches.append(createCache(populated: populated))
+        }
+        return caches
+    }
+
     func testInsertionPerformance() {
-        cache.removeAll()
+        var caches = createCaches(populated: false)
+        var result: Any?
+        measure {
+            let cache = caches.popLast()!
+            populateCache(cache)
+            result = cache
+        }
+        XCTAssertNotNil(result)
+    }
+
+    func testReinsertionPerformance() {
+        let cache = createCache(populated: true)
         measure {
             populateCache(cache)
         }
+        XCTAssertEqual(cache.count, iterations)
     }
 
     func testLookupPerformance() {
+        let cache = createCache(populated: true)
         var values = [Int?](repeating: nil, count: iterations)
         measure {
             for i in 0 ..< iterations {
@@ -42,12 +65,7 @@ class LRUPerformanceTests: XCTestCase {
     }
 
     func testRemovalPerformance() {
-        var caches = [LRUCache<Int, Int>]()
-        for _ in 0 ... 50 { // just to be safe
-            let cache = LRUCache<Int, Int>()
-            populateCache(cache)
-            caches.append(cache)
-        }
+        var caches = createCaches(populated: true)
         var values = [Int?](repeating: nil, count: iterations)
         measure {
             let cache = caches.popLast()!
@@ -59,17 +77,16 @@ class LRUPerformanceTests: XCTestCase {
     }
 
     func testOverflowInsertionPerformance() {
-        cache.removeAll()
+        let cache = createCache(populated: false)
         cache.countLimit = 1000
         measure {
-            for i in 0 ..< iterations {
-                cache.setValue(.random(in: .min ... .max), forKey: i)
-            }
+            populateCache(cache)
         }
         XCTAssertEqual(cache.count, 1000)
     }
 
     func testKeysPerformance() {
+        let cache = createCache(populated: true)
         var keys: (any Collection<Int>)?
         measure {
             for _ in 0 ..< iterations {
@@ -80,6 +97,7 @@ class LRUPerformanceTests: XCTestCase {
     }
 
     func testValuesPerformance() {
+        let cache = createCache(populated: true)
         var values: (any Collection<Int>)?
         measure {
             for _ in 0 ..< iterations {
@@ -95,6 +113,7 @@ class LRUPerformanceTests: XCTestCase {
     func testOrderedKeysPerformance() {
         let options = XCTMeasureOptions()
         options.iterationCount = 1
+        let cache = createCache(populated: true)
         var keys: (any Collection<Int>)?
         measure(options: options) {
             for _ in 0 ..< iterations {
@@ -108,6 +127,7 @@ class LRUPerformanceTests: XCTestCase {
     func testOrderedValuesPerformance() {
         let options = XCTMeasureOptions()
         options.iterationCount = 1
+        let cache = createCache(populated: true)
         var values: (any Collection<Int>)?
         measure(options: options) {
             for _ in 0 ..< iterations {
