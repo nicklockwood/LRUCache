@@ -116,7 +116,22 @@ public extension LRUCache {
     /// Is the cache empty?
     var isEmpty: Bool { _count == 0 }
 
+    /// All keys in the cache, in no particular order
+    var keys: some Collection<Key> {
+        lock.lock()
+        defer { lock.unlock() }
+        return _values.keys
+    }
+
+    /// All values in the cache, in no particular order
+    var values: some Collection<Value> {
+        lock.lock()
+        defer { lock.unlock() }
+        return _values.values.map(\.value)
+    }
+
     /// All keys in the cache, ordered from oldest to newest
+    /// Note: this is orders of magnitude slower to compute than `keys`
     var orderedKeys: [Key] {
         lock.lock()
         defer { lock.unlock() }
@@ -130,6 +145,7 @@ public extension LRUCache {
     }
 
     /// All values in the cache, ordered from oldest to newest
+    /// Note: this is orders of magnitude slower to compute than `values`
     var orderedValues: [Value] {
         lock.lock()
         defer { lock.unlock() }

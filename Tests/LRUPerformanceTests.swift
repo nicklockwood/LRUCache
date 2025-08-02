@@ -55,4 +55,48 @@ class LRUPerformanceTests: XCTestCase {
             }
         }
     }
+
+    func testKeysPerformance() {
+        var keys: (any Collection<Int>)?
+        measure {
+            for _ in 0 ..< iterations {
+                keys = cache.keys
+            }
+        }
+        XCTAssertEqual(keys?.count, iterations)
+    }
+
+    func testValuesPerformance() {
+        var values: (any Collection<Int>)?
+        measure {
+            for _ in 0 ..< iterations {
+                values = cache.keys
+            }
+        }
+        XCTAssertEqual(values?.count, iterations)
+    }
+
+    func testOrderedKeysPerformance() {
+        let options = XCTMeasureOptions()
+        options.iterationCount = 1
+        var keys: (any Collection<Int>)?
+        measure(options: options) {
+            for _ in 0 ..< iterations {
+                keys = cache.orderedKeys
+            }
+        }
+        XCTAssertEqual(keys?.count, iterations)
+    }
+
+    func testOrderedValuesPerformance() {
+        let options = XCTMeasureOptions()
+        options.iterationCount = 1
+        var values: (any Collection<Int>)?
+        measure(options: options) {
+            for _ in 0 ..< iterations {
+                values = cache.orderedValues
+            }
+        }
+        XCTAssertEqual(values?.count, iterations)
+    }
 }
