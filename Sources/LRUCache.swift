@@ -49,7 +49,7 @@ public let LRUCacheMemoryWarningNotification: NSNotification.Name =
 #endif
 
 public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendable {
-    private var values: [Key: Container] = [:]
+    private var _values: [Key: Container] = [:]
     private var _count: Int = 0
     private var _countLimit: Int
     private var _totalCost: Int = 0
@@ -117,7 +117,7 @@ public extension LRUCache {
     var isEmpty: Bool { _count == 0 }
 
     /// All keys in the cache, ordered from oldest to newest
-    var allKeys: [Key] {
+    var orderedKeys: [Key] {
         lock.lock()
         defer { lock.unlock() }
         var keys = [Key]()
@@ -130,7 +130,7 @@ public extension LRUCache {
     }
 
     /// All values in the cache, ordered from oldest to newest
-    var allValues: [Value] {
+    var orderedValues: [Value] {
         lock.lock()
         defer { lock.unlock() }
         var values = [Value]()
@@ -142,6 +142,14 @@ public extension LRUCache {
         return values
     }
 
+    /// All keys in the cache, ordered from oldest to newest
+    @available(*, deprecated, renamed: "orderedKeys")
+    var allKeys: [Key] { orderedKeys }
+
+    /// All values in the cache, ordered from oldest to newest
+    @available(*, deprecated, renamed: "orderedValues")
+    var allValues: [Value] { orderedValues }
+
     /// Insert a value into the cache with optional `cost`
     func setValue(_ value: Value?, forKey key: Key, cost: Int = 0) {
         guard let value else {
@@ -150,7 +158,7 @@ public extension LRUCache {
         }
         lock.lock()
         defer { lock.unlock() }
-        if let container = values[key] {
+        if let container = _values[key] {
             container.value = value
             _totalCost += cost - container.cost
             container.cost = cost
@@ -164,7 +172,7 @@ public extension LRUCache {
             )
             _totalCost += cost
             _count += 1
-            values[key] = container
+            _values[key] = container
             append(container)
         }
         clean()
@@ -174,7 +182,7 @@ public extension LRUCache {
     @discardableResult func removeValue(forKey key: Key) -> Value? {
         lock.lock()
         defer { lock.unlock() }
-        guard let container = values.removeValue(forKey: key) else {
+        guard let container = _values.removeValue(forKey: key) else {
             return nil
         }
         remove(container)
@@ -187,7 +195,7 @@ public extension LRUCache {
     func value(forKey key: Key) -> Value? {
         lock.lock()
         defer { lock.unlock() }
-        if let container = values[key] {
+        if let container = _values[key] {
             remove(container)
             append(container)
             return container.value
@@ -198,7 +206,7 @@ public extension LRUCache {
     /// Remove all values from the cache
     func removeAllValues() {
         lock.lock()
-        values.removeAll()
+        _values.removeAll()
         head = nil
         tail = nil
         _totalCost = 0
@@ -252,7 +260,7 @@ private extension LRUCache {
               let container = head
         {
             remove(container)
-            values.removeValue(forKey: container.key)
+            _values.removeValue(forKey: container.key)
             _totalCost -= container.cost
             _count -= 1
         }
