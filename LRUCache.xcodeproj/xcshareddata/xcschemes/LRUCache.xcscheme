@@ -20,6 +20,20 @@
                ReferencedContainer = "container:LRUCache.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "01AA52E52E3DFC96008A01BF"
+               BuildableName = "LRUCachePerformanceTests.xctest"
+               BlueprintName = "LRUCachePerformanceTests"
+               ReferencedContainer = "container:LRUCache.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

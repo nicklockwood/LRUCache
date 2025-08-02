@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0162A09923795EB30078AE84 /* LRUCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 016FAB2921BFE78100AF60DC /* LRUCache.framework */; };
+		01AA52E92E3DFC96008A01BF /* LRUPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */; };
+		01AA52EE2E3DFC96008A01BF /* LRUCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 016FAB2921BFE78100AF60DC /* LRUCache.framework */; };
 		01E6777E2B5BDBE1005594D6 /* MetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */; };
-		01FFF38226BCDCCC004D99ED /* LRUPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */; };
 		0A240137256A64FB00C1535C /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A240136256A64FB00C1535C /* LRUCacheTests.swift */; };
 		0A24013F256A671600C1535C /* LRUCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A24013E256A671600C1535C /* LRUCache.swift */; };
 /* End PBXBuildFile section */
@@ -22,13 +23,19 @@
 			remoteGlobalIDString = 016FAB2821BFE78100AF60DC;
 			remoteInfo = Euclid;
 		};
+		01AA52E72E3DFC96008A01BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 016FAB2021BFE78100AF60DC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 016FAB2821BFE78100AF60DC;
+			remoteInfo = Euclid;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		016FAB2921BFE78100AF60DC /* LRUCache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LRUCache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		016FAB2D21BFE78100AF60DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		016FAB3221BFE78100AF60DC /* LRUCacheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LRUCacheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		016FAB3921BFE78100AF60DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01AA52F32E3DFC96008A01BF /* LRUCachePerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LRUCachePerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataTests.swift; sourceTree = "<group>"; };
 		01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUPerformanceTests.swift; sourceTree = "<group>"; };
 		0A240136256A64FB00C1535C /* LRUCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheTests.swift; sourceTree = "<group>"; };
@@ -48,6 +55,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				0162A09923795EB30078AE84 /* LRUCache.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AA52ED2E3DFC96008A01BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01AA52EE2E3DFC96008A01BF /* LRUCache.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +93,7 @@
 			children = (
 				016FAB2921BFE78100AF60DC /* LRUCache.framework */,
 				016FAB3221BFE78100AF60DC /* LRUCacheTests.xctest */,
+				01AA52F32E3DFC96008A01BF /* LRUCachePerformanceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -86,7 +102,6 @@
 			isa = PBXGroup;
 			children = (
 				0A24013E256A671600C1535C /* LRUCache.swift */,
-				016FAB2D21BFE78100AF60DC /* Info.plist */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -97,7 +112,6 @@
 				0A240136256A64FB00C1535C /* LRUCacheTests.swift */,
 				01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */,
 				01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */,
-				016FAB3921BFE78100AF60DC /* Info.plist */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -153,6 +167,25 @@
 			productReference = 016FAB3221BFE78100AF60DC /* LRUCacheTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		01AA52E52E3DFC96008A01BF /* LRUCachePerformanceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01AA52F02E3DFC96008A01BF /* Build configuration list for PBXNativeTarget "LRUCachePerformanceTests" */;
+			buildPhases = (
+				01AA52E82E3DFC96008A01BF /* Sources */,
+				01AA52EC2E3DFC96008A01BF /* Format Code */,
+				01AA52ED2E3DFC96008A01BF /* Frameworks */,
+				01AA52EF2E3DFC96008A01BF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				01AA52E62E3DFC96008A01BF /* PBXTargetDependency */,
+			);
+			name = LRUCachePerformanceTests;
+			productName = EuclidTests;
+			productReference = 01AA52F32E3DFC96008A01BF /* LRUCachePerformanceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -160,7 +193,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = "Nick Lockwood";
 				TargetAttributes = {
@@ -189,6 +222,7 @@
 			targets = (
 				016FAB2821BFE78100AF60DC /* LRUCache */,
 				016FAB3121BFE78100AF60DC /* LRUCacheTests */,
+				01AA52E52E3DFC96008A01BF /* LRUCachePerformanceTests */,
 			);
 		};
 /* End PBXProject section */
@@ -208,9 +242,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		01AA52EF2E3DFC96008A01BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		01AA52EC2E3DFC96008A01BF /* Format Code */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Format Code";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:$HOME/.mint/bin:/opt/homebrew/bin\"\nif which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+		};
 		01F2A9E9250177730081CDF5 /* Format Code */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -264,9 +324,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01FFF38226BCDCCC004D99ED /* LRUPerformanceTests.swift in Sources */,
 				0A240137256A64FB00C1535C /* LRUCacheTests.swift in Sources */,
 				01E6777E2B5BDBE1005594D6 /* MetadataTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AA52E82E3DFC96008A01BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01AA52E92E3DFC96008A01BF /* LRUPerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +344,11 @@
 			isa = PBXTargetDependency;
 			target = 016FAB2821BFE78100AF60DC /* LRUCache */;
 			targetProxy = 0162A09723795E820078AE84 /* PBXContainerItemProxy */;
+		};
+		01AA52E62E3DFC96008A01BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 016FAB2821BFE78100AF60DC /* LRUCache */;
+			targetProxy = 01AA52E72E3DFC96008A01BF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -429,7 +501,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = Sources/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -444,11 +516,13 @@
 				PRODUCT_NAME = LRUCache;
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "$(AVAILABLE_PLATFORMS)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3,6,7";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
 			};
 			name = Debug;
 		};
@@ -467,7 +541,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = Sources/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -482,10 +556,12 @@
 				PRODUCT_NAME = LRUCache;
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "$(AVAILABLE_PLATFORMS)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3,6,7";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
 			};
 			name = Release;
 		};
@@ -497,7 +573,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Tests/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -506,8 +582,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.charcoaldesign.LRUCacheTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx appletvos appletvsimulator watchsimulator watchos";
+				SUPPORTED_PLATFORMS = "$(AVAILABLE_PLATFORMS)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
 			};
 			name = Debug;
 		};
@@ -519,7 +599,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Tests/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -528,8 +608,64 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.charcoaldesign.LRUCacheTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx appletvos appletvsimulator watchsimulator watchos";
+				SUPPORTED_PLATFORMS = "$(AVAILABLE_PLATFORMS)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
+			};
+			name = Release;
+		};
+		01AA52F12E3DFC96008A01BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.charcoaldesign.LRUCachePerformanceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "$(AVAILABLE_PLATFORMS)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
+			};
+			name = Debug;
+		};
+		01AA52F22E3DFC96008A01BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.charcoaldesign.LRUCachePerformanceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "$(AVAILABLE_PLATFORMS)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
 			};
 			name = Release;
 		};
@@ -559,6 +695,15 @@
 			buildConfigurations = (
 				016FAB4121BFE78100AF60DC /* Debug */,
 				016FAB4221BFE78100AF60DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01AA52F02E3DFC96008A01BF /* Build configuration list for PBXNativeTarget "LRUCachePerformanceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01AA52F12E3DFC96008A01BF /* Debug */,
+				01AA52F22E3DFC96008A01BF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

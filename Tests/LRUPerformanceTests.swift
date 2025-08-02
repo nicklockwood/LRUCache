@@ -11,36 +11,38 @@ import XCTest
 
 class LRUPerformanceTests: XCTestCase {
     let iterations = 10000
+    let cache = LRUCache<Int, Int>()
+
+    override func setUp() {
+        cache.removeAllValues()
+        for i in 0 ..< iterations {
+            cache.setValue(Int.random(in: .min ... .max), forKey: i)
+        }
+    }
 
     func testInsertionPerformance() {
         measure {
             let cache = LRUCache<Int, Int>()
             for i in 0 ..< iterations {
-                cache.setValue(i, forKey: i)
+                cache.setValue(Int.random(in: .min ... .max), forKey: i)
             }
         }
     }
 
     func testLookupPerformance() {
-        let cache = LRUCache<Int, Int>()
-        for i in 0 ..< iterations {
-            cache.setValue(i, forKey: i)
-        }
+        var values = [Int?](repeating: nil, count: iterations)
         measure {
             for i in 0 ..< iterations {
-                _ = cache.value(forKey: i)
+                values[i] = cache.value(forKey: i)
             }
         }
     }
 
     func testRemovalPerformance() {
-        let cache = LRUCache<Int, Int>()
-        for i in 0 ..< iterations {
-            cache.setValue(i, forKey: i)
-        }
+        var values = [Int?](repeating: nil, count: iterations)
         measure {
             for i in 0 ..< iterations {
-                _ = cache.removeValue(forKey: i)
+                values[i] = cache.removeValue(forKey: i)
             }
         }
     }
