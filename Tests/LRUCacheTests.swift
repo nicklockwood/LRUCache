@@ -118,14 +118,14 @@ class LRUCacheTests: XCTestCase {
     }
 
     func testNotificationObserverIsRemoved() {
-        final class TestNotificationCenter: NotificationCenter {
+        final class TestNotificationCenter: NotificationCenter, @unchecked Sendable {
             private(set) var observersCount = 0
 
             override func addObserver(
                 forName name: NSNotification.Name?,
                 object obj: Any?,
                 queue: OperationQueue?,
-                using block: @escaping (Notification) -> Void
+                using block: @escaping @Sendable (Notification) -> Void
             ) -> NSObjectProtocol {
                 defer { observersCount += 1 }
                 return super.addObserver(
