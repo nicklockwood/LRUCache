@@ -75,7 +75,7 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
             object: nil,
             queue: nil
         ) { [weak self] _ in
-            self?.removeAllValues()
+            self?.removeAll()
         }
     }
 
@@ -229,7 +229,7 @@ public extension LRUCache {
     }
 
     /// Remove all values from the cache
-    func removeAllValues() {
+    func removeAll() {
         lock.lock()
         _values.removeAll()
         head = nil
@@ -238,6 +238,10 @@ public extension LRUCache {
         _count = 0
         lock.unlock()
     }
+
+    /// Remove all values from the cache
+    @available(*, deprecated, renamed: "removeAll")
+    func removeAllValues() { removeAll() }
 }
 
 private extension LRUCache {

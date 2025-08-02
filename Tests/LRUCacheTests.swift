@@ -72,7 +72,7 @@ class LRUCacheTests: XCTestCase {
         let cache = LRUCache<Int, Int>(totalCostLimit: 2)
         cache.setValue(0, forKey: 0, cost: 1)
         cache.setValue(1, forKey: 1, cost: 1)
-        cache.removeAllValues()
+        cache.removeAll()
         XCTAssert(cache.isEmpty)
         XCTAssertEqual(cache.totalCost, 0)
         cache.setValue(0, forKey: 0, cost: 1)
@@ -87,7 +87,7 @@ class LRUCacheTests: XCTestCase {
         XCTAssertEqual(cache.orderedKeys, [0, 1])
         cache.setValue(0, forKey: 0)
         XCTAssertEqual(cache.orderedKeys, [1, 0])
-        cache.removeAllValues()
+        cache.removeAll()
         XCTAssert(cache.orderedKeys.isEmpty)
     }
 
@@ -98,7 +98,7 @@ class LRUCacheTests: XCTestCase {
         XCTAssertEqual(cache.orderedValues, [0, 1])
         cache.setValue(0, forKey: 0)
         XCTAssertEqual(cache.orderedValues, [1, 0])
-        cache.removeAllValues()
+        cache.removeAll()
         XCTAssert(cache.orderedValues.isEmpty)
     }
 

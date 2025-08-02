@@ -14,7 +14,7 @@ class LRUPerformanceTests: XCTestCase {
     let cache = LRUCache<Int, Int>()
 
     override func setUp() {
-        cache.removeAllValues()
+        cache.removeAll()
         for i in 0 ..< iterations {
             cache.setValue(Int.random(in: .min ... .max), forKey: i)
         }
