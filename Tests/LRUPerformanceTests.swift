@@ -15,17 +15,19 @@ class LRUPerformanceTests: XCTestCase {
 
     override func setUp() {
         cache.removeAll()
+        populateCache(cache)
+    }
+
+    private func populateCache(_ cache: LRUCache<Int, Int>) {
         for i in 0 ..< iterations {
-            cache.setValue(Int.random(in: .min ... .max), forKey: i)
+            cache.setValue(.random(in: .min ... .max), forKey: i)
         }
     }
 
     func testInsertionPerformance() {
+        cache.removeAll()
         measure {
-            let cache = LRUCache<Int, Int>()
-            for i in 0 ..< iterations {
-                cache.setValue(Int.random(in: .min ... .max), forKey: i)
-            }
+            populateCache(cache)
         }
     }
 
@@ -36,24 +38,35 @@ class LRUPerformanceTests: XCTestCase {
                 values[i] = cache.value(forKey: i)
             }
         }
+        XCTAssert(values.allSatisfy { $0 != nil })
     }
 
     func testRemovalPerformance() {
+        var caches = [LRUCache<Int, Int>]()
+        for _ in 0 ... 50 { // just to be safe
+            let cache = LRUCache<Int, Int>()
+            populateCache(cache)
+            caches.append(cache)
+        }
         var values = [Int?](repeating: nil, count: iterations)
         measure {
+            let cache = caches.popLast()!
             for i in 0 ..< iterations {
                 values[i] = cache.removeValue(forKey: i)
             }
         }
+        XCTAssert(values.allSatisfy { $0 != nil })
     }
 
     func testOverflowInsertionPerformance() {
+        cache.removeAll()
+        cache.countLimit = 1000
         measure {
-            let cache = LRUCache<Int, Int>(countLimit: 1000)
             for i in 0 ..< iterations {
-                cache.setValue(i, forKey: i)
+                cache.setValue(.random(in: .min ... .max), forKey: i)
             }
         }
+        XCTAssertEqual(cache.count, 1000)
     }
 
     func testKeysPerformance() {
@@ -76,6 +89,9 @@ class LRUPerformanceTests: XCTestCase {
         XCTAssertEqual(values?.count, iterations)
     }
 
+    #if os(macOS) || os(iOS)
+
+    @available(iOS 13.0, *)
     func testOrderedKeysPerformance() {
         let options = XCTMeasureOptions()
         options.iterationCount = 1
@@ -88,6 +104,7 @@ class LRUPerformanceTests: XCTestCase {
         XCTAssertEqual(keys?.count, iterations)
     }
 
+    @available(iOS 13.0, *)
     func testOrderedValuesPerformance() {
         let options = XCTMeasureOptions()
         options.iterationCount = 1
@@ -99,4 +116,6 @@ class LRUPerformanceTests: XCTestCase {
         }
         XCTAssertEqual(values?.count, iterations)
     }
+
+    #endif
 }

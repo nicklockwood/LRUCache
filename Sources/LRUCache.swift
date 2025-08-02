@@ -40,7 +40,7 @@ import UIKit
 public let LRUCacheMemoryWarningNotification: NSNotification.Name =
     UIApplication.didReceiveMemoryWarningNotification
 
-#else
+#elseif !os(WASI)
 
 /// Notification that cache should be cleared
 public let LRUCacheMemoryWarningNotification: NSNotification.Name =
@@ -58,6 +58,9 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
     private unowned(unsafe) var tail: Container?
     private let lock: NSLock = .init()
     private var token: AnyObject?
+
+    #if !os(WASI)
+
     private let notificationCenter: NotificationCenter
 
     /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
@@ -82,6 +85,16 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
     deinit {
         token.map(notificationCenter.removeObserver)
     }
+
+    #else
+
+    /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
+    public init(totalCostLimit: Int = .max, countLimit: Int = .max) {
+        self._totalCostLimit = totalCostLimit
+        self._countLimit = countLimit
+    }
+
+    #endif
 }
 
 public extension LRUCache {
@@ -130,7 +143,7 @@ public extension LRUCache {
         return _values.values.map(\.value)
     }
 
-    /// All keys in the cache, ordered from oldest to newest
+    /// All keys in the cache, ordered from least recently used to most recently used
     /// Note: this is orders of magnitude slower to compute than `keys`
     var orderedKeys: [Key] {
         lock.lock()
@@ -145,7 +158,7 @@ public extension LRUCache {
         return keys
     }
 
-    /// All values in the cache, ordered from oldest to newest
+    /// All values in the cache, ordered from least recently used to most recently used
     /// Note: this is orders of magnitude slower to compute than `values`
     var orderedValues: [Value] {
         lock.lock()
@@ -160,15 +173,15 @@ public extension LRUCache {
         return values
     }
 
-    /// All keys in the cache, ordered from oldest to newest
+    /// All keys in the cache, ordered from least recently used to most recently used
     @available(*, deprecated, renamed: "orderedKeys")
     var allKeys: [Key] { orderedKeys }
 
-    /// All values in the cache, ordered from oldest to newest
+    /// All values in the cache, ordered from least recently used to most recently used
     @available(*, deprecated, renamed: "orderedValues")
     var allValues: [Value] { orderedValues }
 
-    /// Insert a value into the cache with optional `cost`
+    /// Insert a value into the cache with optional `cost` and mark it as most recently used
     func setValue(_ value: Value?, forKey key: Key, cost: Int = 0) {
         guard let value else {
             removeValue(forKey: key)
@@ -196,6 +209,25 @@ public extension LRUCache {
         clean()
     }
 
+    /// Check if a value exists in the cache without affecting how recently it was used
+    func hasValue(forKey key: Key) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return _values[key] != nil
+    }
+
+    /// Fetch a value from the cache and mark it as most recently used
+    func value(forKey key: Key) -> Value? {
+        lock.lock()
+        defer { lock.unlock() }
+        if let container = _values[key] {
+            remove(container)
+            append(container)
+            return container.value
+        }
+        return nil
+    }
+
     /// Remove a value  from the cache and return it
     @discardableResult func removeValue(forKey key: Key) -> Value? {
         lock.lock()
@@ -207,25 +239,6 @@ public extension LRUCache {
         _totalCost -= container.cost
         _count -= 1
         return container.value
-    }
-
-    /// Check if a value exists in the cache without affecting its eviction priority
-    func hasValue(forKey key: Key) -> Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        return _values[key] != nil
-    }
-
-    /// Fetch a value from the cache
-    func value(forKey key: Key) -> Value? {
-        lock.lock()
-        defer { lock.unlock() }
-        if let container = _values[key] {
-            remove(container)
-            append(container)
-            return container.value
-        }
-        return nil
     }
 
     /// Remove all values from the cache

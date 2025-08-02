@@ -115,6 +115,8 @@ class LRUCacheTests: XCTestCase {
         XCTAssertEqual(cache.totalCost, 7)
     }
 
+    #if !os(WASI)
+
     func testMemoryWarning() {
         let cache = LRUCache<Int, Int>()
         for i in 0 ..< 100 {
@@ -132,11 +134,17 @@ class LRUCacheTests: XCTestCase {
         final class TestNotificationCenter: NotificationCenter, @unchecked Sendable {
             private(set) var observersCount = 0
 
+            #if os(Linux)
+            typealias NotificationBlock = (Notification) -> Void
+            #else
+            typealias NotificationBlock = @Sendable (Notification) -> Void
+            #endif
+
             override func addObserver(
                 forName name: NSNotification.Name?,
                 object obj: Any?,
                 queue: OperationQueue?,
-                using block: @escaping @Sendable (Notification) -> Void
+                using block: @escaping NotificationBlock
             ) -> NSObjectProtocol {
                 defer { observersCount += 1 }
                 return super.addObserver(
@@ -162,6 +170,7 @@ class LRUCacheTests: XCTestCase {
         XCTAssertNil(weakCache)
         XCTAssertEqual(0, notificationCenter.observersCount)
     }
+    #endif
 
     func testNoStackOverflowForlargeCache() {
         let cache = LRUCache<Int, Int>()

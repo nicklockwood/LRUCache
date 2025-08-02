@@ -1,3 +1,13 @@
+## [1.1.0](https://github.com/nicklockwood/LRUCache/releases/tag/1.1.0) (2025-08-02)
+
+- Added Sendable conformance
+- Setting `totalCostLimit` and `countLimit` is now thread-safe
+- Added `hasValue(forKey:)` method to check for the presence of a value without bumping its priority
+- Renamed `removeAllValues()` to `removeAll()`, `allKeys` to `orderedKeys` and `allValues` to `orderedValues`
+- Improved the performance of `allKeys` and `allValues` getters (now called `orderedKeys`/`orderedValues`)
+- Added new, much faster unordered `keys` and `values` accessors
+- Bumped required Swift version to 5.7
+
 ## [1.0.7](https://github.com/nicklockwood/LRUCache/releases/tag/1.0.7) (2024-01-26)
 
 - Fixed watchOS compatibility issue
