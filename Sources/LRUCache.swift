@@ -136,6 +136,7 @@ public extension LRUCache {
         lock.lock()
         defer { lock.unlock() }
         var keys = [Key]()
+        keys.reserveCapacity(_count)
         var next = head
         while let container = next {
             keys.append(container.key)
@@ -150,6 +151,7 @@ public extension LRUCache {
         lock.lock()
         defer { lock.unlock() }
         var values = [Value]()
+        values.reserveCapacity(_count)
         var next = head
         while let container = next {
             values.append(container.value)
