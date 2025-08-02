@@ -107,6 +107,30 @@ class LRUPerformanceTests: XCTestCase {
         XCTAssertEqual(values?.count, iterations)
     }
 
+    func testConcurrentAccess() {
+        let cache = LRUCache<String, Int>()
+        measure {
+            let queue = DispatchQueue(label: "stress.test", attributes: .concurrent)
+            let group = DispatchGroup()
+
+            let keys = (0 ..< 1000).map { "key\($0)" }
+            for _ in 0 ..< iterations {
+                group.enter()
+                queue.async {
+                    let key = keys.randomElement()!
+                    if Bool.random() {
+                        cache.setValue(.random(in: 0 ... 1000), forKey: key)
+                    } else {
+                        _ = cache.value(forKey: key)
+                    }
+                    group.leave()
+                }
+            }
+
+            group.wait()
+        }
+    }
+
     #if os(macOS) || os(iOS)
 
     @available(iOS 13.0, *)
