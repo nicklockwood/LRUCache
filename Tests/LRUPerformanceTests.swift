@@ -107,6 +107,8 @@ class LRUPerformanceTests: XCTestCase {
         XCTAssertEqual(values?.count, iterations)
     }
 
+    #if !os(WASI)
+
     func testConcurrentAccess() {
         let cache = LRUCache<String, Int>()
         measure {
@@ -130,6 +132,8 @@ class LRUPerformanceTests: XCTestCase {
             group.wait()
         }
     }
+
+    #endif
 
     #if os(macOS) || os(iOS)
 

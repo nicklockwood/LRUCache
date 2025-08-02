@@ -16,6 +16,7 @@
 # rules
 
 --enable isEmpty
+--enable docComments
 --enable noGuardInTests
 --enable throwingTests
 --enable redundantEquatable

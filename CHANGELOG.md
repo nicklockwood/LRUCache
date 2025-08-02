@@ -1,3 +1,8 @@
+## [1.1.1](https://github.com/nicklockwood/LRUCache/releases/tag/1.1.1) (2025-08-02)
+
+- Improved thread safety
+- Bumped tools version in Package.swift
+
 ## [1.1.0](https://github.com/nicklockwood/LRUCache/releases/tag/1.1.0) (2025-08-02)
 
 - Added Sendable conformance

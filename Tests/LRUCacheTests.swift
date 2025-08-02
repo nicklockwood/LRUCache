@@ -115,6 +115,8 @@ class LRUCacheTests: XCTestCase {
         XCTAssertEqual(cache.totalCost, 7)
     }
 
+    #if !os(WASI)
+
     func testConcurrentAccess() {
         let cache = LRUCache<String, Int>()
         let queue = DispatchQueue(label: "stress.test", attributes: .concurrent)
@@ -136,8 +138,6 @@ class LRUCacheTests: XCTestCase {
 
         group.wait()
     }
-
-    #if !os(WASI)
 
     func testMemoryWarning() {
         let cache = LRUCache<Int, Int>()
@@ -192,6 +192,7 @@ class LRUCacheTests: XCTestCase {
         XCTAssertNil(weakCache)
         XCTAssertEqual(0, notificationCenter.observersCount)
     }
+
     #endif
 
     func testNoStackOverflowForlargeCache() {

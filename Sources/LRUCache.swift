@@ -268,14 +268,14 @@ private extension LRUCache {
         }
     }
 
-    // Atomic access
+    /// Atomic access
     func atomic<T>(_ action: () -> T) -> T {
         lock.lock()
         defer { lock.unlock() }
         return action()
     }
 
-    // Remove container from list (must be called inside lock)
+    /// Remove container from list (must be called inside lock)
     func remove(_ container: Container) {
         if head === container {
             head = container.next
@@ -288,7 +288,7 @@ private extension LRUCache {
         container.next = nil
     }
 
-    // Append container to list (must be called inside lock)
+    /// Append container to list (must be called inside lock)
     func append(_ container: Container) {
         assert(container.next == nil)
         if head == nil {
@@ -299,7 +299,7 @@ private extension LRUCache {
         tail = container
     }
 
-    // Remove expired values (must be called inside lock)
+    /// Remove expired values (must be called inside lock)
     func clean() {
         while _totalCost > _totalCostLimit || _values.count > _countLimit,
               let container = head
