@@ -209,6 +209,13 @@ public extension LRUCache {
         return container.value
     }
 
+    /// Check if a value exists in the cache without affecting its eviction priority
+    func hasValue(forKey key: Key) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return _values[key] != nil
+    }
+
     /// Fetch a value from the cache
     func value(forKey key: Key) -> Value? {
         lock.lock()
