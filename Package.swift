@@ -1,13 +1,13 @@
-// swift-tools-version: 6.1
+// swift-tools-version: 5.7
 import PackageDescription
 
 let package = Package(
     name: "LRUCache",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v14),
-        .tvOS(.v15),
-        .watchOS(.v7),
+        .iOS(.v13),
+        .macOS(.v10_13),
+        .tvOS(.v13),
+        .watchOS(.v6),
     ],
     products: [
         .library(name: "LRUCache", targets: ["LRUCache"]),
