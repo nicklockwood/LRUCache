@@ -5,7 +5,7 @@ let package = Package(
     name: "LRUCache",
     platforms: [
         .iOS(.v13),
-        .macOS(.v10_13),
+        .macOS(.v10_15),
         .tvOS(.v13),
         .watchOS(.v6),
     ],

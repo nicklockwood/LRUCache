@@ -2,8 +2,6 @@
 //  LRUCache.swift
 //  LRUCache
 //
-//  Version 1.0.2
-//
 //  Created by Nick Lockwood on 05/08/2021.
 //  Copyright © 2021 Nick Lockwood. All rights reserved.
 //

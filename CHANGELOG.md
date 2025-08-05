@@ -1,3 +1,9 @@
+# Change Log
+
+## [1.1.2](https://github.com/nicklockwood/LRUCache/releases/tag/1.1.2) (2025-08-05)
+
+- Set correct minimum OS versions
+
 ## [1.1.1](https://github.com/nicklockwood/LRUCache/releases/tag/1.1.1) (2025-08-02)
 
 - Improved thread safety
