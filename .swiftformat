@@ -18,7 +18,8 @@
 --enable isEmpty
 --enable docComments
 --enable noGuardInTests
---enable throwingTests
+--enable noForceTryInTests
+--enable noForceUnwrapInTests
 --enable redundantEquatable
 --enable redundantMemberwiseInit
 --enable redundantProperty

@@ -20,14 +20,14 @@
 
 # Installation
 
-LRUCache is packaged as a dynamic framework that you can import into your Xcode project. You can install this manually, or by using Swift Package Manager.
+LRUCache is packaged as a framework that you can import into your Xcode project. You can install this manually, or by using Swift Package Manager.
 
 **Note:** LRUCache requires Xcode 14+ to build, and runs on iOS/tvOS 13+, watchOS 6+ or macOS 10.15+.
 
 To install using Swift Package Manage, add this to the `dependencies:` section in your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/nicklockwood/LRUCache.git", .upToNextMinor(from: "1.1.2")),
+.package(url: "https://github.com/nicklockwood/LRUCache.git", .upToNextMinor(from: "1.2.0")),
 ```
 
 
@@ -95,7 +95,7 @@ You can remove all values from the cache immediately with:
 cache.removeAll()
 ```
 
-On platforms where UIKit is available (iOS, tvOS, and visionOS), the cache will be emptied automatically in the event of a memory warning.
+On Apple platforms (macOS, iOS, iPadOS, visionOS, tvOS, watchOS) the cache will be emptied automatically in the event of a memory warning.
 
 
 # Concurrency
@@ -113,4 +113,3 @@ Reading, writing and removing entries from the cache are performed in constant t
 The LRUCache framework is primarily the work of [Nick Lockwood](https://github.com/nicklockwood).
 
 ([Full list of contributors](https://github.com/nicklockwood/LRUCache/graphs/contributors))
-

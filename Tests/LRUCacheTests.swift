@@ -155,20 +155,15 @@ class LRUCacheTests: XCTestCase {
 
     @available(*, deprecated, message: "Obsolete")
     func testNotificationObserverIsRemoved() {
+        #if !os(Linux)
         final class TestNotificationCenter: NotificationCenter, @unchecked Sendable {
             private(set) var observersCount = 0
-
-            #if os(Linux)
-            typealias NotificationBlock = (Notification) -> Void
-            #else
-            typealias NotificationBlock = @Sendable (Notification) -> Void
-            #endif
 
             override func addObserver(
                 forName name: NSNotification.Name?,
                 object obj: Any?,
                 queue: OperationQueue?,
-                using block: @escaping NotificationBlock
+                using block: @escaping @Sendable (Notification) -> Void
             ) -> NSObjectProtocol {
                 defer { observersCount += 1 }
                 return super.addObserver(
@@ -192,6 +187,7 @@ class LRUCacheTests: XCTestCase {
         cache = nil
         XCTAssertNil(weakCache)
         XCTAssertEqual(0, notificationCenter.observersCount)
+        #endif
     }
 
     #endif

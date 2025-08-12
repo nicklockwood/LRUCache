@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.2.0](https://github.com/nicklockwood/LRUCache/releases/tag/1.2.0) (2025-10-17)
+
+- DispatchSourceMemoryPressure is now used to clear cache automatically on all Apple platforms
+- Deprecated `LRUCacheMemoryWarningNotification`
+
 ## [1.1.2](https://github.com/nicklockwood/LRUCache/releases/tag/1.1.2) (2025-08-05)
 
 - Set correct minimum OS versions
