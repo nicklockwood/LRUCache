@@ -54,12 +54,16 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
     private unowned(unsafe) var head: Container?
     private unowned(unsafe) var tail: Container?
     private let lock: NSLock = .init()
+    private var token: AnyObject?
+    
+    #if !os(WASI)
+    
+    private let notificationCenter: NotificationCenter
+    
     #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
     private let memoryPressureSource: DispatchSourceMemoryPressure
     #endif
     
-    #if !os(WASI)
-
     /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
     public init(
         totalCostLimit: Int = .max,
@@ -68,19 +72,29 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
     ) {
         self._totalCostLimit = totalCostLimit
         self._countLimit = countLimit
+        self.notificationCenter = notificationCenter
         
         #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
         self.memoryPressureSource = DispatchSource
             .makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .global())
-        self.memoryPressureSource.setEventHandler {
-            [weak self] in
+        self.memoryPressureSource.setEventHandler { [weak self] in
             self?.removeAll()
         }
         self.memoryPressureSource.resume()
         #endif
+        
+        self.token = notificationCenter.addObserver(
+            forName: LRUCacheMemoryWarningNotification,
+            object: nil,
+            queue: nil
+        ) { [weak self] _ in
+            self?.removeAll()
+        }
     }
     
     deinit {
+        token.map(notificationCenter.removeObserver)
+        
         #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
         self.memoryPressureSource.cancel()
         #endif
