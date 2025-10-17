@@ -31,18 +31,10 @@
 
 import Foundation
 
-#if canImport(UIKit) && !os(watchOS)
-import UIKit
+#if !os(WASI)
 
-/// Notification that cache should be cleared
-public let LRUCacheMemoryWarningNotification: NSNotification.Name =
-    UIApplication.didReceiveMemoryWarningNotification
-
-#elseif !os(WASI)
-
-/// Notification that cache should be cleared
-public let LRUCacheMemoryWarningNotification: NSNotification.Name =
-    .init("LRUCacheMemoryWarningNotification")
+@available(*, deprecated, message: "Do not use")
+public let LRUCacheMemoryWarningNotification: NSNotification.Name = _notification
 
 #endif
 
@@ -54,58 +46,63 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
     private unowned(unsafe) var head: Container?
     private unowned(unsafe) var tail: Container?
     private let lock: NSLock = .init()
-    private var token: AnyObject?
-    
-    #if !os(WASI)
-    
-    private let notificationCenter: NotificationCenter
-    
+
     #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
     private let memoryPressureSource: DispatchSourceMemoryPressure
     #endif
-    
+
     /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
-    public init(
-        totalCostLimit: Int = .max,
-        countLimit: Int = .max,
-        notificationCenter: NotificationCenter = .default
-    ) {
+    public init(totalCostLimit: Int = .max, countLimit: Int = .max) {
         self._totalCostLimit = totalCostLimit
         self._countLimit = countLimit
-        self.notificationCenter = notificationCenter
-        
+
         #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
         self.memoryPressureSource = DispatchSource
             .makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .global())
-        self.memoryPressureSource.setEventHandler { [weak self] in
+        memoryPressureSource.setEventHandler { [weak self] in
             self?.removeAll()
         }
-        self.memoryPressureSource.resume()
+        memoryPressureSource.resume()
         #endif
-        
-        self.token = notificationCenter.addObserver(
-            forName: LRUCacheMemoryWarningNotification,
+
+        #if !os(WASI)
+        registerNotifications(for: .default)
+        #endif
+    }
+
+    #if !os(WASI)
+
+    @available(*, deprecated, message: "Do not use")
+    public convenience init(
+        totalCostLimit: Int = .max,
+        countLimit: Int = .max,
+        notificationCenter: NotificationCenter
+    ) {
+        self.init(totalCostLimit: totalCostLimit, countLimit: countLimit)
+        registerNotifications(for: notificationCenter)
+    }
+
+    private var token: AnyObject?
+    private var notificationCenter: NotificationCenter = .default
+
+    func registerNotifications(for notificationCenter: NotificationCenter) {
+        token.map(self.notificationCenter.removeObserver)
+        self.notificationCenter = notificationCenter
+        token = notificationCenter.addObserver(
+            forName: _notification,
             object: nil,
             queue: nil
         ) { [weak self] _ in
             self?.removeAll()
         }
     }
-    
+
     deinit {
         token.map(notificationCenter.removeObserver)
-        
+
         #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
         self.memoryPressureSource.cancel()
         #endif
-    }
-
-    #else
-
-    /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
-    public init(totalCostLimit: Int = .max, countLimit: Int = .max) {
-        self._totalCostLimit = totalCostLimit
-        self._countLimit = countLimit
     }
 
     #endif
@@ -267,6 +264,14 @@ public extension LRUCache {
     @available(*, deprecated, renamed: "removeAll")
     func removeAllValues() { removeAll() }
 }
+
+#if canImport(UIKit) && !os(watchOS)
+import UIKit
+
+private let _notification: NSNotification.Name = UIApplication.didReceiveMemoryWarningNotification
+#elseif !os(WASI)
+private let _notification: NSNotification.Name = .init("LRUCacheMemoryWarningNotification")
+#endif
 
 private extension LRUCache {
     final class Container {

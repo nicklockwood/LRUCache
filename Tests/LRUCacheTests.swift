@@ -139,6 +139,7 @@ class LRUCacheTests: XCTestCase {
         group.wait()
     }
 
+    @available(*, deprecated, message: "Obsolete")
     func testMemoryWarning() {
         let cache = LRUCache<Int, Int>()
         for i in 0 ..< 100 {
@@ -152,6 +153,7 @@ class LRUCacheTests: XCTestCase {
         XCTAssert(cache.isEmpty)
     }
 
+    @available(*, deprecated, message: "Obsolete")
     func testNotificationObserverIsRemoved() {
         final class TestNotificationCenter: NotificationCenter, @unchecked Sendable {
             private(set) var observersCount = 0
@@ -184,8 +186,7 @@ class LRUCacheTests: XCTestCase {
         }
 
         let notificationCenter = TestNotificationCenter()
-        var cache: LRUCache<Int, Int>? =
-            .init(notificationCenter: notificationCenter)
+        var cache: LRUCache<Int, Int>? = .init(notificationCenter: notificationCenter)
         weak var weakCache = cache
         XCTAssertEqual(1, notificationCenter.observersCount)
         cache = nil
