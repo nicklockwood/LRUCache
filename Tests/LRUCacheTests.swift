@@ -154,6 +154,21 @@ class LRUCacheTests: XCTestCase {
     }
 
     @available(*, deprecated, message: "Obsolete")
+    func testClearsOnMemoryPressureDisabled() {
+        let cache = LRUCache<Int, Int>(clearsOnMemoryPressure: false)
+        for i in 0 ..< 100 {
+            cache.setValue(i, forKey: i)
+        }
+        XCTAssertEqual(cache.count, 100)
+        NotificationCenter.default.post(
+            name: LRUCacheMemoryWarningNotification,
+            object: nil
+        )
+        // Cache should NOT be cleared when clearsOnMemoryPressure is false
+        XCTAssertEqual(cache.count, 100)
+    }
+
+    @available(*, deprecated, message: "Obsolete")
     func testNotificationObserverIsRemoved() {
         #if !os(Linux)
         final class TestNotificationCenter: NotificationCenter, @unchecked Sendable {
