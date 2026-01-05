@@ -45,28 +45,40 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
     private var _totalCostLimit: Int
     private unowned(unsafe) var head: Container?
     private unowned(unsafe) var tail: Container?
+    private let clearsOnMemoryPressure: Bool
     private let lock: NSLock = .init()
 
     #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
-    private let memoryPressureSource: DispatchSourceMemoryPressure
+    private let memoryPressureSource: DispatchSourceMemoryPressure?
     #endif
 
     /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
-    public init(totalCostLimit: Int = .max, countLimit: Int = .max) {
+    public init(
+        totalCostLimit: Int = .max,
+        countLimit: Int = .max,
+        clearsOnMemoryPressure: Bool = true
+    ) {
         self._totalCostLimit = totalCostLimit
         self._countLimit = countLimit
+        self.clearsOnMemoryPressure = clearsOnMemoryPressure
 
         #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
-        self.memoryPressureSource = DispatchSource
-            .makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .global())
-        memoryPressureSource.setEventHandler { [weak self] in
-            self?.removeAll()
+        if clearsOnMemoryPressure {
+            self.memoryPressureSource = DispatchSource
+                .makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .global())
+            memoryPressureSource?.setEventHandler { [weak self] in
+                self?.removeAll()
+            }
+            memoryPressureSource?.resume()
+        } else {
+            self.memoryPressureSource = nil
         }
-        memoryPressureSource.resume()
         #endif
 
         #if !os(WASI)
-        registerNotifications(for: .default)
+        if clearsOnMemoryPressure {
+            registerNotifications(for: .default)
+        }
         #endif
     }
 
@@ -101,7 +113,7 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
         token.map(notificationCenter.removeObserver)
 
         #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
-        self.memoryPressureSource.cancel()
+        self.memoryPressureSource?.cancel()
         #endif
     }
 
