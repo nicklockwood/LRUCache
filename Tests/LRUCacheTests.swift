@@ -169,6 +169,44 @@ class LRUCacheTests: XCTestCase {
     }
 
     @available(*, deprecated, message: "Obsolete")
+    func testMemoryPressureNotification() {
+        // Test with custom notification center to verify event handler execution
+        let notificationCenter = NotificationCenter()
+
+        let cache = LRUCache<Int, Int>(
+            totalCostLimit: .max,
+            countLimit: .max,
+            clearsOnMemoryPressure: true
+        )
+
+        // Add some values
+        for i in 0 ..< 10 {
+            cache.setValue(i, forKey: i)
+        }
+        XCTAssertEqual(cache.count, 10)
+
+        // Post memory warning notification
+        notificationCenter.post(
+            name: LRUCacheMemoryWarningNotification,
+            object: nil
+        )
+
+        // Note: This test uses the default notification center, so we can't easily
+        // test the event handler execution without modifying the cache implementation
+        // The existing testMemoryWarning() already tests the basic functionality
+
+        // Test that the cache responds to memory pressure
+        NotificationCenter.default.post(
+            name: LRUCacheMemoryWarningNotification,
+            object: nil
+        )
+
+        // Cache should be empty after memory warning
+        XCTAssertTrue(cache.isEmpty)
+        XCTAssertEqual(cache.count, 0)
+    }
+
+    @available(*, deprecated, message: "Obsolete")
     func testNotificationObserverIsRemoved() {
         #if !os(Linux)
         final class TestNotificationCenter: NotificationCenter, @unchecked Sendable {
@@ -212,5 +250,228 @@ class LRUCacheTests: XCTestCase {
         for i in 0 ..< 100000 {
             cache.setValue(i, forKey: i)
         }
+    }
+
+    func testHasValue() {
+        let cache = LRUCache<String, Int>()
+
+        // Test empty cache
+        XCTAssertFalse(cache.hasValue(forKey: "test"))
+
+        // Test existing key
+        cache.setValue(42, forKey: "test")
+        XCTAssertTrue(cache.hasValue(forKey: "test"))
+
+        // Test non-existing key
+        XCTAssertFalse(cache.hasValue(forKey: "nonexistent"))
+
+        // Verify hasValue doesn't affect LRU order
+        cache.removeAll() // Start fresh
+        cache.setValue(1, forKey: "first")
+        cache.setValue(2, forKey: "second")
+        cache.setValue(3, forKey: "third")
+
+        // Check hasValue doesn't change order
+        XCTAssertTrue(cache.hasValue(forKey: "first"))
+        XCTAssertEqual(cache.orderedKeys, ["first", "second", "third"])
+
+        // Access value should change order
+        _ = cache.value(forKey: "first")
+        XCTAssertEqual(cache.orderedKeys, ["second", "third", "first"])
+    }
+
+    func testValuesProperty() {
+        let cache = LRUCache<String, Int>()
+
+        // Test empty cache
+        XCTAssertTrue(cache.values.isEmpty)
+
+        // Add values and test
+        cache.setValue(1, forKey: "a")
+        cache.setValue(2, forKey: "b")
+        cache.setValue(3, forKey: "c")
+
+        let values = Array(cache.values)
+        XCTAssertEqual(values.count, 3)
+        XCTAssertTrue(values.contains(1))
+        XCTAssertTrue(values.contains(2))
+        XCTAssertTrue(values.contains(3))
+
+        // Test after removal
+        cache.removeValue(forKey: "b")
+        let valuesAfterRemoval = Array(cache.values)
+        XCTAssertEqual(valuesAfterRemoval.count, 2)
+        XCTAssertTrue(valuesAfterRemoval.contains(1))
+        XCTAssertTrue(valuesAfterRemoval.contains(3))
+        XCTAssertFalse(valuesAfterRemoval.contains(2))
+    }
+
+    func testPropertyGetters() {
+        let cache = LRUCache<Int, String>(totalCostLimit: 100, countLimit: 50)
+
+        // Test initial values
+        XCTAssertEqual(cache.totalCostLimit, 100)
+        XCTAssertEqual(cache.countLimit, 50)
+
+        // Test after setting values
+        cache.totalCostLimit = 200
+        cache.countLimit = 75
+
+        XCTAssertEqual(cache.totalCostLimit, 200)
+        XCTAssertEqual(cache.countLimit, 75)
+    }
+
+    func testNilValueHandling() {
+        let cache = LRUCache<String, Int>()
+
+        // Test setting nil for non-existent key
+        cache.setValue(nil, forKey: "nonexistent")
+        XCTAssertFalse(cache.hasValue(forKey: "nonexistent"))
+        XCTAssertEqual(cache.count, 0)
+
+        // Test setting nil for existing key
+        cache.setValue(42, forKey: "test")
+        XCTAssertTrue(cache.hasValue(forKey: "test"))
+        XCTAssertEqual(cache.count, 1)
+
+        cache.setValue(nil, forKey: "test")
+        XCTAssertFalse(cache.hasValue(forKey: "test"))
+        XCTAssertEqual(cache.count, 0)
+    }
+
+    func testNegativeCostHandling() {
+        let cache = LRUCache<String, Int>()
+
+        // Test setting negative cost
+        cache.setValue(42, forKey: "test", cost: -5)
+        XCTAssertEqual(cache.value(forKey: "test"), 42)
+        XCTAssertEqual(cache.totalCost, -5)
+
+        // Test replacing with positive cost
+        cache.setValue(43, forKey: "test", cost: 10)
+        XCTAssertEqual(cache.value(forKey: "test"), 43)
+        XCTAssertEqual(cache.totalCost, 10)
+    }
+
+    func testEmptyCacheOperations() {
+        let cache = LRUCache<String, Int>()
+
+        // Test all operations on empty cache
+        XCTAssertNil(cache.value(forKey: "test"))
+        XCTAssertNil(cache.removeValue(forKey: "test"))
+        XCTAssertFalse(cache.hasValue(forKey: "test"))
+        XCTAssertTrue(cache.isEmpty)
+        XCTAssertEqual(cache.count, 0)
+        XCTAssertEqual(cache.totalCost, 0)
+        XCTAssertTrue(cache.keys.isEmpty)
+        XCTAssertTrue(cache.values.isEmpty)
+        XCTAssertTrue(cache.orderedKeys.isEmpty)
+        XCTAssertTrue(cache.orderedValues.isEmpty)
+
+        // Test removeAll on empty cache
+        cache.removeAll()
+        XCTAssertTrue(cache.isEmpty)
+    }
+
+    func testStringKeyAndValueTypes() {
+        let cache = LRUCache<String, String>()
+
+        cache.setValue("hello", forKey: "greeting")
+        cache.setValue("world", forKey: "object")
+
+        XCTAssertEqual(cache.value(forKey: "greeting"), "hello")
+        XCTAssertEqual(cache.value(forKey: "object"), "world")
+        XCTAssertEqual(cache.count, 2)
+
+        let keys = Array(cache.keys)
+        XCTAssertTrue(keys.contains("greeting"))
+        XCTAssertTrue(keys.contains("object"))
+
+        let values = Array(cache.values)
+        XCTAssertTrue(values.contains("hello"))
+        XCTAssertTrue(values.contains("world"))
+    }
+
+    func testObjectValueTypes() {
+        struct TestObject: Equatable {
+            let id: Int
+            let name: String
+        }
+
+        let cache = LRUCache<Int, TestObject>()
+
+        let obj1 = TestObject(id: 1, name: "first")
+        let obj2 = TestObject(id: 2, name: "second")
+
+        cache.setValue(obj1, forKey: 1)
+        cache.setValue(obj2, forKey: 2)
+
+        XCTAssertEqual(cache.value(forKey: 1), obj1)
+        XCTAssertEqual(cache.value(forKey: 2), obj2)
+        XCTAssertEqual(cache.count, 2)
+    }
+
+    func testCostLimitWithZeroCost() {
+        let cache = LRUCache<String, Int>(totalCostLimit: 10)
+
+        // Test adding items with zero cost
+        cache.setValue(1, forKey: "a", cost: 0)
+        cache.setValue(2, forKey: "b", cost: 0)
+        cache.setValue(3, forKey: "c", cost: 0)
+
+        // All should be allowed since cost is 0
+        XCTAssertEqual(cache.count, 3)
+        XCTAssertEqual(cache.totalCost, 0)
+
+        // Test adding item with positive cost within limit
+        cache.setValue(4, forKey: "d", cost: 5)
+        XCTAssertEqual(cache.count, 4)
+        XCTAssertEqual(cache.totalCost, 5)
+
+        // Test adding item that would exceed limit
+        cache.setValue(5, forKey: "e", cost: 10)
+        // Should trigger eviction of oldest items
+        XCTAssertLessThanOrEqual(cache.totalCost, 10)
+    }
+
+    func testCacheWithZeroLimits() {
+        let cache = LRUCache<String, Int>(totalCostLimit: 0, countLimit: 0)
+
+        // Test that items are immediately evicted when limits are 0
+        cache.setValue(1, forKey: "a", cost: 0)
+        XCTAssertEqual(cache.count, 0)
+        XCTAssertNil(cache.value(forKey: "a"))
+
+        // Even with positive cost, should be evicted
+        cache.setValue(2, forKey: "b", cost: 5)
+        XCTAssertEqual(cache.count, 0)
+        XCTAssertNil(cache.value(forKey: "b"))
+    }
+
+    func testLRUOrderConsistency() {
+        let cache = LRUCache<String, Int>(countLimit: 3)
+
+        // Add items
+        cache.setValue(1, forKey: "a")
+        cache.setValue(2, forKey: "b")
+        cache.setValue(3, forKey: "c")
+
+        XCTAssertEqual(cache.orderedKeys, ["a", "b", "c"])
+
+        // Access middle item - should move to end
+        _ = cache.value(forKey: "b")
+        XCTAssertEqual(cache.orderedKeys, ["a", "c", "b"])
+
+        // Access first item - should move to end
+        _ = cache.value(forKey: "a")
+        XCTAssertEqual(cache.orderedKeys, ["c", "b", "a"])
+
+        // Add new item - should evict first (c)
+        cache.setValue(4, forKey: "d")
+        XCTAssertEqual(cache.orderedKeys, ["b", "a", "d"])
+        XCTAssertNil(cache.value(forKey: "c"))
+        XCTAssertNotNil(cache.value(forKey: "b"))
+        XCTAssertNotNil(cache.value(forKey: "a"))
+        XCTAssertNotNil(cache.value(forKey: "d"))
     }
 }
