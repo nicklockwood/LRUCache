@@ -235,7 +235,11 @@ class LRUCacheTests: XCTestCase {
 
         let notificationCenter = TestNotificationCenter()
         var cache: LRUCache<Int, Int>? = .init(notificationCenter: notificationCenter)
+        #if compiler(<6.2)
         weak var weakCache = cache
+        #else
+        weak let weakCache = cache
+        #endif
         XCTAssertEqual(1, notificationCenter.observersCount)
         cache = nil
         XCTAssertNil(weakCache)

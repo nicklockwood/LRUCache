@@ -27,7 +27,7 @@ LRUCache is packaged as a framework that you can import into your Xcode project.
 To install using Swift Package Manage, add this to the `dependencies:` section in your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/nicklockwood/LRUCache.git", .upToNextMinor(from: "1.2.0")),
+.package(url: "https://github.com/nicklockwood/LRUCache.git", .upToNextMinor(from: "1.2.1")),
 ```
 
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.1](https://github.com/nicklockwood/LRUCache/releases/tag/1.2.1) (2026-01-11)
+
+- Added optional `clearsOnMemoryPressure` parameter to opt-out of automatic cache clearing behavior
+
 ## [1.2.0](https://github.com/nicklockwood/LRUCache/releases/tag/1.2.0) (2025-10-17)
 
 - DispatchSourceMemoryPressure is now used to clear cache automatically on all Apple platforms
