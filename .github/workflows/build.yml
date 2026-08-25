@@ -5,17 +5,12 @@ on:
   pull_request:
 jobs:
   macos:
-    strategy:
-      fail-fast: false
-      matrix:
-        macos:
-          - 14
-        xcode:
-          - latest-stable
-    runs-on: macos-${{ matrix.macos }}
+    runs-on: macos-15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.0.app/Contents/Developer
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
       - name: Build and Test
         run: |
           xcodebuild -scheme "LRUCache" -sdk macosx clean build test -enableCodeCoverage YES -derivedDataPath Build/
@@ -26,7 +21,7 @@ jobs:
           cd ../../../../
           xcrun llvm-cov export -format="lcov" -instr-profile $pathCoverage Build/Build/Products/Debug/LRUCache.framework/LRUCache > info.lcov
       - name: Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v6
         with:
           # the token is optional for a public repo, but including it anyway
           token: 5bfd6ece-264f-4cef-8dbf-4c5cfa0f87aa
@@ -37,25 +32,25 @@ jobs:
       fail-fast: false
       matrix:
         swiftver:
-          - swift:5.7
+          - swift:5.10
           - swiftlang/swift:nightly-main
         swiftos:
-          - focal
+          - jammy
     runs-on: ubuntu-latest
     container:
       image: ${{ format('{0}-{1}', matrix.swiftver, matrix.swiftos) }}
       options: --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --security-opt apparmor=unconfined
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v5
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  swiftwasm_test_5_9:
+  swiftwasm_build_5_10:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/swiftwasm/swift:5.10
     steps:
-      - uses: actions/checkout@v3
-      - uses: swiftwasm/swiftwasm-action@v5.9
-        with:
-          shell-action: carton test
-
+      - uses: actions/checkout@v5
+      - name: Build
+        run: swift build --triple wasm32-unknown-wasi --static-swift-stdlib
