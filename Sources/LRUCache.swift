@@ -31,13 +31,6 @@
 
 import Foundation
 
-#if !os(WASI)
-
-@available(*, deprecated, message: "Do not use")
-public let LRUCacheMemoryWarningNotification: NSNotification.Name = _notification
-
-#endif
-
 public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendable {
     private var _values: [Key: Container] = [:]
     private var _countLimit: Int
@@ -74,50 +67,13 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
             self.memoryPressureSource = nil
         }
         #endif
-
-        #if !os(WASI)
-        if clearsOnMemoryPressure {
-            registerNotifications(for: .default)
-        }
-        #endif
-    }
-
-    #if !os(WASI)
-
-    @available(*, deprecated, message: "Do not use")
-    public convenience init(
-        totalCostLimit: Int = .max,
-        countLimit: Int = .max,
-        notificationCenter: NotificationCenter
-    ) {
-        self.init(totalCostLimit: totalCostLimit, countLimit: countLimit)
-        registerNotifications(for: notificationCenter)
-    }
-
-    private var token: AnyObject?
-    private var notificationCenter: NotificationCenter = .default
-
-    func registerNotifications(for notificationCenter: NotificationCenter) {
-        token.map(self.notificationCenter.removeObserver)
-        self.notificationCenter = notificationCenter
-        token = notificationCenter.addObserver(
-            forName: _notification,
-            object: nil,
-            queue: nil
-        ) { [weak self] _ in
-            self?.removeAll()
-        }
     }
 
     deinit {
-        token.map(notificationCenter.removeObserver)
-
         #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS) || os(visionOS)
         self.memoryPressureSource?.cancel()
         #endif
     }
-
-    #endif
 }
 
 public extension LRUCache {
@@ -198,14 +154,6 @@ public extension LRUCache {
         }
     }
 
-    /// All keys in the cache, ordered from least recently used to most recently used
-    @available(*, deprecated, renamed: "orderedKeys")
-    var allKeys: [Key] { orderedKeys }
-
-    /// All values in the cache, ordered from least recently used to most recently used
-    @available(*, deprecated, renamed: "orderedValues")
-    var allValues: [Value] { orderedValues }
-
     /// Insert a value into the cache with optional `cost` and mark it as most recently used
     func setValue(_ value: Value?, forKey key: Key, cost: Int = 0) {
         guard let value else {
@@ -271,19 +219,7 @@ public extension LRUCache {
             _totalCost = 0
         }
     }
-
-    /// Remove all values from the cache
-    @available(*, deprecated, renamed: "removeAll")
-    func removeAllValues() { removeAll() }
 }
-
-#if canImport(UIKit) && !os(watchOS)
-import UIKit
-
-private let _notification: NSNotification.Name = UIApplication.didReceiveMemoryWarningNotification
-#elseif !os(WASI)
-private let _notification: NSNotification.Name = .init("LRUCacheMemoryWarningNotification")
-#endif
 
 private extension LRUCache {
     final class Container {

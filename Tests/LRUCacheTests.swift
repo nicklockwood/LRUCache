@@ -68,7 +68,7 @@ class LRUCacheTests: XCTestCase {
         XCTAssert(cache.isEmpty)
     }
 
-    func testRemoveAllValues() {
+    func testRemoveAll() {
         let cache = LRUCache<Int, Int>(totalCostLimit: 2)
         cache.setValue(0, forKey: 0, cost: 1)
         cache.setValue(1, forKey: 1, cost: 1)
@@ -137,114 +137,6 @@ class LRUCacheTests: XCTestCase {
         }
 
         group.wait()
-    }
-
-    @available(*, deprecated, message: "Obsolete")
-    func testMemoryWarning() {
-        let cache = LRUCache<Int, Int>()
-        for i in 0 ..< 100 {
-            cache.setValue(i, forKey: i)
-        }
-        XCTAssertEqual(cache.count, 100)
-        NotificationCenter.default.post(
-            name: LRUCacheMemoryWarningNotification,
-            object: nil
-        )
-        XCTAssert(cache.isEmpty)
-    }
-
-    @available(*, deprecated, message: "Obsolete")
-    func testClearsOnMemoryPressureDisabled() {
-        let cache = LRUCache<Int, Int>(clearsOnMemoryPressure: false)
-        for i in 0 ..< 100 {
-            cache.setValue(i, forKey: i)
-        }
-        XCTAssertEqual(cache.count, 100)
-        NotificationCenter.default.post(
-            name: LRUCacheMemoryWarningNotification,
-            object: nil
-        )
-        // Cache should NOT be cleared when clearsOnMemoryPressure is false
-        XCTAssertEqual(cache.count, 100)
-    }
-
-    @available(*, deprecated, message: "Obsolete")
-    func testMemoryPressureNotification() {
-        // Test with custom notification center to verify event handler execution
-        let notificationCenter = NotificationCenter()
-
-        let cache = LRUCache<Int, Int>(
-            totalCostLimit: .max,
-            countLimit: .max,
-            clearsOnMemoryPressure: true
-        )
-
-        // Add some values
-        for i in 0 ..< 10 {
-            cache.setValue(i, forKey: i)
-        }
-        XCTAssertEqual(cache.count, 10)
-
-        // Post memory warning notification
-        notificationCenter.post(
-            name: LRUCacheMemoryWarningNotification,
-            object: nil
-        )
-
-        // Note: This test uses the default notification center, so we can't easily
-        // test the event handler execution without modifying the cache implementation
-        // The existing testMemoryWarning() already tests the basic functionality
-
-        // Test that the cache responds to memory pressure
-        NotificationCenter.default.post(
-            name: LRUCacheMemoryWarningNotification,
-            object: nil
-        )
-
-        // Cache should be empty after memory warning
-        XCTAssertTrue(cache.isEmpty)
-        XCTAssertEqual(cache.count, 0)
-    }
-
-    @available(*, deprecated, message: "Obsolete")
-    func testNotificationObserverIsRemoved() {
-        #if !os(Linux)
-        final class TestNotificationCenter: NotificationCenter, @unchecked Sendable {
-            private(set) var observersCount = 0
-
-            override func addObserver(
-                forName name: NSNotification.Name?,
-                object obj: Any?,
-                queue: OperationQueue?,
-                using block: @escaping @Sendable (Notification) -> Void
-            ) -> NSObjectProtocol {
-                defer { observersCount += 1 }
-                return super.addObserver(
-                    forName: name,
-                    object: obj,
-                    queue: queue,
-                    using: block
-                )
-            }
-
-            override func removeObserver(_ observer: Any) {
-                super.removeObserver(observer)
-                observersCount -= 1
-            }
-        }
-
-        let notificationCenter = TestNotificationCenter()
-        var cache: LRUCache<Int, Int>? = .init(notificationCenter: notificationCenter)
-        #if compiler(<6.2)
-        weak var weakCache = cache
-        #else
-        weak let weakCache = cache
-        #endif
-        XCTAssertEqual(1, notificationCenter.observersCount)
-        cache = nil
-        XCTAssertNil(weakCache)
-        XCTAssertEqual(0, notificationCenter.observersCount)
-        #endif
     }
 
     #endif
