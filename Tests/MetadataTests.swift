@@ -43,7 +43,7 @@ private let changelogTitles: [Substring] = {
     return matches
 }()
 
-class MetadataTests: XCTestCase {
+final class MetadataTests: XCTestCase {
     // MARK: releases
 
     func testProjectVersionMatchesChangelog() throws {

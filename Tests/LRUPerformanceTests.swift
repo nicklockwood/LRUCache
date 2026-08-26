@@ -9,7 +9,7 @@
 import LRUCache
 import XCTest
 
-class LRUPerformanceTests: XCTestCase {
+final class LRUPerformanceTests: XCTestCase {
     let iterations = 10000
 
     private func populateCache(_ cache: LRUCache<Int, Int>) {

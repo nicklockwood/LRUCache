@@ -3,16 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0162A09923795EB30078AE84 /* LRUCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 016FAB2921BFE78100AF60DC /* LRUCache.framework */; };
-		01AA52E92E3DFC96008A01BF /* LRUPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */; };
 		01AA52EE2E3DFC96008A01BF /* LRUCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 016FAB2921BFE78100AF60DC /* LRUCache.framework */; };
-		01E6777E2B5BDBE1005594D6 /* MetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */; };
-		0A240137256A64FB00C1535C /* LRUCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A240136256A64FB00C1535C /* LRUCacheTests.swift */; };
-		0A24013F256A671600C1535C /* LRUCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A24013E256A671600C1535C /* LRUCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,11 +32,29 @@
 		016FAB2921BFE78100AF60DC /* LRUCache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LRUCache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		016FAB3221BFE78100AF60DC /* LRUCacheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LRUCacheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		01AA52F32E3DFC96008A01BF /* LRUCachePerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LRUCachePerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataTests.swift; sourceTree = "<group>"; };
-		01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUPerformanceTests.swift; sourceTree = "<group>"; };
-		0A240136256A64FB00C1535C /* LRUCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCacheTests.swift; sourceTree = "<group>"; };
-		0A24013E256A671600C1535C /* LRUCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		01E7ECDC303C644300B2314C /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				LRUPerformanceTests.swift,
+			);
+			target = 016FAB3121BFE78100AF60DC /* LRUCacheTests */;
+		};
+		01E7ECDD303C644300B2314C /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				LRUPerformanceTests.swift,
+			);
+			target = 01AA52E52E3DFC96008A01BF /* LRUCachePerformanceTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		01E7ECD2303C644200B2314C /* Sources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sources; sourceTree = "<group>"; };
+		01E7ECD7303C644200B2314C /* Tests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (01E7ECDC303C644300B2314C /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 01E7ECDD303C644300B2314C /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Tests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		016FAB2621BFE78100AF60DC /* Frameworks */ = {
@@ -72,8 +86,8 @@
 		016FAB1F21BFE78100AF60DC = {
 			isa = PBXGroup;
 			children = (
-				016FAB2B21BFE78100AF60DC /* Sources */,
-				016FAB3621BFE78100AF60DC /* Tests */,
+				01E7ECD2303C644200B2314C /* Sources */,
+				01E7ECD7303C644200B2314C /* Tests */,
 				016FAB2A21BFE78100AF60DC /* Products */,
 			);
 			indentWidth = 4;
@@ -88,24 +102,6 @@
 				01AA52F32E3DFC96008A01BF /* LRUCachePerformanceTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		016FAB2B21BFE78100AF60DC /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				0A24013E256A671600C1535C /* LRUCache.swift */,
-			);
-			path = Sources;
-			sourceTree = "<group>";
-		};
-		016FAB3621BFE78100AF60DC /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				0A240136256A64FB00C1535C /* LRUCacheTests.swift */,
-				01FFF38126BCDCCC004D99ED /* LRUPerformanceTests.swift */,
-				01E6777D2B5BDBE1005594D6 /* MetadataTests.swift */,
-			);
-			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,6 +131,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				01E7ECD2303C644200B2314C /* Sources */,
+			);
 			name = LRUCache;
 			productName = Euclid;
 			productReference = 016FAB2921BFE78100AF60DC /* LRUCache.framework */;
@@ -153,6 +152,9 @@
 			);
 			dependencies = (
 				0162A09823795E820078AE84 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				01E7ECD7303C644200B2314C /* Tests */,
 			);
 			name = LRUCacheTests;
 			productName = EuclidTests;
@@ -308,7 +310,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A24013F256A671600C1535C /* LRUCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,8 +317,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A240137256A64FB00C1535C /* LRUCacheTests.swift in Sources */,
-				01E6777E2B5BDBE1005594D6 /* MetadataTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,7 +324,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01AA52E92E3DFC96008A01BF /* LRUPerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,7 +411,7 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 				WATCHOS_DEPLOYMENT_TARGET = 8.7;
-				XROS_DEPLOYMENT_TARGET = 1.3;
+				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Debug;
 		};
@@ -478,7 +476,7 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 				WATCHOS_DEPLOYMENT_TARGET = 8.7;
-				XROS_DEPLOYMENT_TARGET = 1.3;
+				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Release;
 		};

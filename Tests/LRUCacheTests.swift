@@ -9,7 +9,7 @@
 import LRUCache
 import XCTest
 
-class LRUCacheTests: XCTestCase {
+final class LRUCacheTests: XCTestCase {
     func testCountLimit() {
         let cache = LRUCache<Int, Int>(countLimit: 2)
         cache.setValue(0, forKey: 0)
