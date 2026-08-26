@@ -100,7 +100,7 @@ On Apple platforms (macOS, iOS, iPadOS, visionOS, tvOS, watchOS) the cache will 
 
 # Concurrency
 
-**LRUCache** is `Sendable` and uses `NSLock` internally to ensure mutations are atomic. It is therefore safe to access a single cache instance from multiple threads.
+**LRUCache** is `Sendable` when its value type is `Sendable`, and uses `NSLock` internally to ensure mutations are atomic. It is therefore safe to access a single cache instance from multiple threads when the stored values can also be safely shared across concurrency domains.
 
 
 # Performance

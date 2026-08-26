@@ -117,6 +117,13 @@ final class LRUCacheTests: XCTestCase {
 
     #if !os(WASI)
 
+    func testSendableConformanceWhenValueIsSendable() {
+        func requireSendable(_: some Sendable) {}
+
+        let cache = LRUCache<String, Int>()
+        requireSendable(cache)
+    }
+
     func testConcurrentAccess() {
         let cache = LRUCache<String, Int>()
         let queue = DispatchQueue(label: "stress.test", attributes: .concurrent)

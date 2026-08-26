@@ -31,7 +31,7 @@
 
 import Foundation
 
-public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendable {
+public final class LRUCache<Key: Hashable & Sendable, Value> {
     private var _values: [Key: Container] = [:]
     private var _countLimit: Int
     private var _totalCost: Int = 0
@@ -75,6 +75,8 @@ public final class LRUCache<Key: Hashable & Sendable, Value>: @unchecked Sendabl
         #endif
     }
 }
+
+extension LRUCache: @unchecked Sendable where Value: Sendable {}
 
 public extension LRUCache {
     /// The current total cost of values in the cache
@@ -237,6 +239,14 @@ private extension LRUCache {
     }
 
     /// Atomic access
+    #if compiler(>=6.0)
+    func atomic<T: Sendable>(_ action: () -> sending T) -> sending T {
+        lock.lock()
+        defer { lock.unlock() }
+        return action()
+    }
+    #endif
+
     func atomic<T>(_ action: () -> T) -> T {
         lock.lock()
         defer { lock.unlock() }
