@@ -31,6 +31,19 @@
 
 import Foundation
 
+/// A thread-safe least-recently-used cache.
+///
+/// `LRUCache` stores values by key and evicts the least recently used values
+/// first when either `totalCostLimit` or `countLimit` is exceeded. Reading a
+/// value with `value(forKey:)` updates its recency, while `hasValue(forKey:)`
+/// does not.
+///
+/// The cache is safe to access from multiple threads. `LRUCache` conforms to
+/// `Sendable` when `Value` is also `Sendable`.
+///
+/// - Parameters:
+///   - Key: The type used to identify cached values.
+///   - Value: The type of values stored in the cache.
 public final class LRUCache<Key: Hashable & Sendable, Value> {
     private var _values: [Key: Container] = [:]
     private var _countLimit: Int
@@ -45,7 +58,20 @@ public final class LRUCache<Key: Hashable & Sendable, Value> {
     private let memoryPressureSource: DispatchSourceMemoryPressure?
     #endif
 
-    /// Initialize the cache with the specified `totalCostLimit` and `countLimit`
+    /// Creates a cache with the specified memory limits.
+    ///
+    /// Values are evicted least-recently-used first when either limit is
+    /// exceeded. A cost of zero can be used for values whose cost is unknown,
+    /// in which case they will only be evicted when `countLimit` is exceeded.
+    ///
+    /// - Parameters:
+    ///   - totalCostLimit: The maximum total cost of values stored in memory.
+    ///     The default is `Int.max`, which is effectively unlimited.
+    ///   - countLimit: The maximum number of values stored in memory. The
+    ///     default is `Int.max`, which is effectively unlimited.
+    ///   - clearsOnMemoryPressure: Whether the cache should be cleared
+    ///     when the system reports memory pressure on supported Apple
+    ///     platforms. The default is `true`.
     public init(
         totalCostLimit: Int = .max,
         countLimit: Int = .max,
@@ -76,15 +102,23 @@ public final class LRUCache<Key: Hashable & Sendable, Value> {
     }
 }
 
+/// Conformance that allows caches containing `Sendable` values to be shared
+/// across Swift concurrency domains.
 extension LRUCache: @unchecked Sendable where Value: Sendable {}
 
 public extension LRUCache {
-    /// The current total cost of values in the cache
+    /// The current total cost of values stored in memory.
+    ///
+    /// This is the sum of the `cost` values passed to `setValue(_:forKey:cost:)`
+    /// for values that have not been evicted from memory.
     var totalCost: Int {
         atomic { _totalCost }
     }
 
-    /// The maximum total cost permitted
+    /// The maximum total cost permitted in memory.
+    ///
+    /// Lowering this value immediately evicts least-recently-used values until
+    /// the cache is within the new limit. The default value is `Int.max`.
     var totalCostLimit: Int {
         get { atomic { _totalCostLimit } }
         set {
@@ -95,12 +129,15 @@ public extension LRUCache {
         }
     }
 
-    /// The number of values currently stored in the cache
+    /// The number of values currently stored in memory.
     var count: Int {
         atomic { _values.count }
     }
 
-    /// The maximum number of values permitted
+    /// The maximum number of values permitted in memory.
+    ///
+    /// Lowering this value immediately evicts least-recently-used values until
+    /// the cache is within the new limit. The default value is `Int.max`.
     var countLimit: Int {
         get { atomic { _countLimit } }
         set {
@@ -111,23 +148,26 @@ public extension LRUCache {
         }
     }
 
-    /// Is the cache empty?
+    /// A Boolean value indicating whether the memory cache is empty.
     var isEmpty: Bool {
         atomic { _values.isEmpty }
     }
 
-    /// All keys in the cache, in no particular order
+    /// All keys currently stored in memory, in no particular order.
     var keys: some Collection<Key> {
         atomic { _values.keys }
     }
 
-    /// All values in the cache, in no particular order
+    /// All values currently stored in memory, in no particular order.
     var values: some Collection<Value> {
         atomic { _values.values.map(\.value) }
     }
 
-    /// All keys in the cache, ordered from least recently used to most recently used
-    /// Note: this is orders of magnitude slower to compute than `keys`
+    /// All keys currently stored in memory, ordered from least recently used to
+    /// most recently used.
+    ///
+    /// This property walks the cache's internal linked list and is much slower
+    /// to compute than `keys`.
     var orderedKeys: [Key] {
         atomic {
             var keys = [Key]()
@@ -141,8 +181,11 @@ public extension LRUCache {
         }
     }
 
-    /// All values in the cache, ordered from least recently used to most recently used
-    /// Note: this is orders of magnitude slower to compute than `values`
+    /// All values currently stored in memory, ordered from least recently used
+    /// to most recently used.
+    ///
+    /// This property walks the cache's internal linked list and is much slower
+    /// to compute than `values`.
     var orderedValues: [Value] {
         atomic {
             var values = [Value]()
@@ -156,7 +199,17 @@ public extension LRUCache {
         }
     }
 
-    /// Insert a value into the cache with optional `cost` and mark it as most recently used
+    /// Inserts or removes a value for the specified key.
+    ///
+    /// Passing a non-`nil` value stores it in memory, marks it as most recently
+    /// used. Passing `nil` removes the value from memory.
+    ///
+    /// - Parameters:
+    ///   - value: The value to cache, or `nil` to remove any existing value for
+    ///     `key`.
+    ///   - key: The key used to store and retrieve the value.
+    ///   - cost: The cost to associate with the value in memory. The default is
+    ///     zero.
     func setValue(_ value: Value?, forKey key: Key, cost: Int = 0) {
         guard let value else {
             removeValue(forKey: key)
@@ -183,12 +236,20 @@ public extension LRUCache {
         }
     }
 
-    /// Check if a value exists in the cache without affecting how recently it was used
+    /// Returns whether a value exists for the specified key.
+    /// Calling this method does not update the value's recency.
+    ///
+    /// - Parameter key: The key to look up.
+    /// - Returns: `true` if a value exists for `key`, otherwise, `false`.
     func hasValue(forKey key: Key) -> Bool {
         atomic { _values[key] != nil }
     }
 
-    /// Fetch a value from the cache and mark it as most recently used
+    /// Returns the value for the specified key and marks it as most recently
+    /// used.
+    ///
+    /// - Parameter key: The key to look up.
+    /// - Returns: The cached value for `key`, or `nil` if no value exists.
     func value(forKey key: Key) -> Value? {
         atomic {
             if let container = _values[key] {
@@ -200,7 +261,11 @@ public extension LRUCache {
         }
     }
 
-    /// Remove a value  from the cache and return it
+    /// Removes and returns the value for the specified key.
+    ///
+    /// - Parameter key: The key whose value should be removed.
+    /// - Returns: The value removed from memory, or `nil` if no memory value
+    ///   existed for `key`.
     @discardableResult func removeValue(forKey key: Key) -> Value? {
         atomic {
             guard let container = _values.removeValue(forKey: key) else {
@@ -212,7 +277,7 @@ public extension LRUCache {
         }
     }
 
-    /// Remove all values from the cache
+    /// Removes all values from the cache.
     func removeAll() {
         atomic {
             _values.removeAll()
